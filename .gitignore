@@ -1,0 +1,13 @@
+*.pte
+*.pth
+*.bin
+*.model
+build/
+.gradle/
+.idea/
+.kotlin/
+local.properties
+*.iml
+__pycache__/
+eval/
+app/src/main/assets/samples/

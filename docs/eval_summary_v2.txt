@@ -1,0 +1,22 @@
+Photos tested: 236
+Disease correct (top-1): 77.1%  (182/236)
+Crop correct: 89.0%
+Confident (≥60%): 77.5% of photos — of these 87.4% correct
+Avg time per photo: 48 ms model (3 views) + 4 ms preprocess
+
+ 25.0%  (1/4)  Corn (maize) — Cercospora leaf spot Gray leaf spot
+ 90.0%  (9/10)  Corn (maize) — Common rust
+ 41.7%  (5/12)  Corn (maize) — Northern Leaf Blight
+ 99.1%  (107/108)  Other — Leaf
+ 55.6%  (5/9)  Pepper — Bacterial spot
+ 87.5%  (7/8)  Pepper — Healthy
+ 37.5%  (3/8)  Potato — Early blight
+ 37.5%  (3/8)  Potato — Late blight
+ 22.2%  (2/9)  Tomato — Bacterial spot
+ 44.4%  (4/9)  Tomato — Early blight
+ 62.5%  (5/8)  Tomato — Healthy
+ 70.0%  (7/10)  Tomato — Late blight
+ 50.0%  (3/6)  Tomato — Leaf Mold
+100.0%  (11/11)  Tomato — Septoria leaf spot
+ 50.0%  (5/10)  Tomato — Tomato mosaic virus
+ 83.3%  (5/6)  Tomato — Tomato Yellow Leaf Curl Virus

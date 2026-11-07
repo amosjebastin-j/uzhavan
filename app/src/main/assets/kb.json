@@ -1,0 +1,854 @@
+{
+ "Corn_(maize)___Cercospora_leaf_spot Gray_leaf_spot": {
+  "en": {
+   "cause": "Fungus (Cercospora zeae-maydis), favoured by warm, humid weather and crop residue left in the field.",
+   "symptoms": "Long, narrow, rectangular grey-brown spots running between the leaf veins, starting on lower leaves.",
+   "actions": [
+    "Remove and destroy badly affected lower leaves",
+    "Avoid overhead irrigation late in the day",
+    "Improve air flow by controlling weeds"
+   ],
+   "treatment": "If spreading to upper leaves before tasselling, a fungicide spray (e.g. strobilurin or triazole group) may be needed. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Rotate with a non-cereal crop, plough under or remove residue, use tolerant hybrids.",
+   "name": "Gray leaf spot"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "சாம்பல் இலைப்புள்ளி",
+   "cause": "பூஞ்சை (செர்கோஸ்போரா); வெப்பம், ஈரப்பதம், வயலில் விடப்பட்ட பயிர் கழிவுகள் காரணம்.",
+   "symptoms": "இலை நரம்புகளுக்கு இடையே நீண்ட, செவ்வக சாம்பல்-பழுப்பு புள்ளிகள்; கீழ் இலைகளில் தொடங்கும்.",
+   "actions": [
+    "அதிகம் பாதித்த கீழ் இலைகளை அகற்றி அழிக்கவும்",
+    "மாலையில் மேல்நீர்ப் பாசனம் தவிர்க்கவும்",
+    "களைகளைக் கட்டுப்படுத்தி காற்றோட்டம் கொடுக்கவும்"
+   ],
+   "treatment": "பூக்கும் முன் மேல் இலைகளுக்குப் பரவினால் பூஞ்சைக்கொல்லி தெளிப்பு தேவைப்படலாம். உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "பயிர் சுழற்சி, கழிவுகளை அகற்றுதல், தாங்கும் ரகங்கள்."
+  },
+  "hi": {
+   "name": "धूसर पत्ती धब्बा",
+   "cause": "फफूंद (सर्कोस्पोरा); गर्म, नम मौसम और खेत में छोड़े फसल अवशेष से बढ़ता है।",
+   "symptoms": "पत्ती की नसों के बीच लंबे, आयताकार धूसर-भूरे धब्बे; नीचे की पत्तियों से शुरू।",
+   "actions": [
+    "ज़्यादा प्रभावित निचली पत्तियाँ हटाकर नष्ट करें",
+    "शाम को ऊपर से सिंचाई न करें",
+    "खरपतवार हटाकर हवा का प्रवाह बढ़ाएँ"
+   ],
+   "treatment": "फूल आने से पहले ऊपरी पत्तियों तक फैले तो फफूंदनाशक छिड़काव की ज़रूरत हो सकती है। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "फसल चक्र, अवशेष हटाना, सहनशील किस्में।"
+  }
+ },
+ "Corn_(maize)___Common_rust_": {
+  "en": {
+   "cause": "Fungus (Puccinia sorghi), spreads by wind-blown spores in cool, humid weather.",
+   "symptoms": "Small, raised, powdery reddish-brown pustules on both leaf surfaces.",
+   "actions": [
+    "Monitor how fast new pustules appear",
+    "Remove heavily infected leaves on young plants"
+   ],
+   "treatment": "Usually not serious on tolerant hybrids; if severe before flowering, a fungicide spray may be advised. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Grow resistant hybrids, sow at the recommended time, avoid very dense planting.",
+   "name": "Common rust"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "சாதாரண துரு நோய்",
+   "cause": "பூஞ்சை (பக்சினியா); குளிர், ஈரமான காலநிலையில் காற்றில் பரவும்.",
+   "symptoms": "இலையின் இருபுறமும் சிறிய, உயர்ந்த, தூள் போன்ற சிவப்பு-பழுப்பு கொப்புளங்கள்.",
+   "actions": [
+    "புதிய கொப்புளங்கள் எவ்வளவு வேகமாகத் தோன்றுகின்றன என்று கவனிக்கவும்",
+    "இளம் செடிகளில் அதிகம் பாதித்த இலைகளை அகற்றவும்"
+   ],
+   "treatment": "தாங்கும் ரகங்களில் பொதுவாகத் தீவிரமில்லை; பூக்கும் முன் கடுமையானால் தெளிப்பு தேவைப்படலாம். உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "எதிர்ப்பு ரகங்கள், சரியான நேரத்தில் விதைப்பு, நெருக்கமான நடவு தவிர்க்கவும்."
+  },
+  "hi": {
+   "name": "सामान्य रतुआ",
+   "cause": "फफूंद (पक्सीनिया); ठंडे, नम मौसम में हवा से फैलता है।",
+   "symptoms": "पत्ती के दोनों ओर छोटे, उभरे, पाउडर जैसे लाल-भूरे फफोले।",
+   "actions": [
+    "नए फफोले कितनी तेज़ी से बन रहे हैं, देखें",
+    "छोटे पौधों की ज़्यादा प्रभावित पत्तियाँ हटाएँ"
+   ],
+   "treatment": "सहनशील किस्मों पर आमतौर पर गंभीर नहीं; फूल से पहले गंभीर हो तो छिड़काव ज़रूरी हो सकता है। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "प्रतिरोधी किस्में, समय पर बुवाई, बहुत घनी बुवाई से बचें।"
+  }
+ },
+ "Corn_(maize)___Northern_Leaf_Blight": {
+  "en": {
+   "cause": "Fungus (Exserohilum turcicum), favoured by moderate temperature, heavy dew and long wet periods.",
+   "symptoms": "Long, cigar-shaped grey-green to tan lesions (2.5–15 cm) on leaves.",
+   "actions": [
+    "Remove and destroy infected leaves",
+    "Keep the field free of weeds for better air flow"
+   ],
+   "treatment": "If lesions reach the ear leaf before silking, a fungicide spray may be needed. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Crop rotation, residue management, resistant hybrids, balanced fertiliser.",
+   "name": "Northern leaf blight"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "வடக்கு இலைக் கருகல்",
+   "cause": "பூஞ்சை (எக்ஸரோஹைலம்); மிதமான வெப்பம், அதிக பனி, நீண்ட ஈரக் காலம் காரணம்.",
+   "symptoms": "இலைகளில் நீண்ட, சுருட்டு வடிவ சாம்பல்-பச்சை முதல் பழுப்பு புண்கள்.",
+   "actions": [
+    "பாதித்த இலைகளை அகற்றி அழிக்கவும்",
+    "காற்றோட்டத்திற்கு வயலைக் களையின்றி வைக்கவும்"
+   ],
+   "treatment": "கதிர் இலைக்குப் புண்கள் பரவினால் பூஞ்சைக்கொல்லி தெளிப்பு தேவைப்படலாம். உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "பயிர் சுழற்சி, கழிவு மேலாண்மை, எதிர்ப்பு ரகங்கள், சமச்சீர் உரம்."
+  },
+  "hi": {
+   "name": "उत्तरी पत्ती झुलसा",
+   "cause": "फफूंद (एक्सेरोहिलम); मध्यम तापमान, भारी ओस और लंबे गीले समय से।",
+   "symptoms": "पत्तियों पर लंबे, सिगार आकार के धूसर-हरे से भूरे घाव।",
+   "actions": [
+    "प्रभावित पत्तियाँ हटाकर नष्ट करें",
+    "हवा के प्रवाह के लिए खेत खरपतवार मुक्त रखें"
+   ],
+   "treatment": "भुट्टे वाली पत्ती तक घाव पहुँचें तो फफूंदनाशक छिड़काव ज़रूरी हो सकता है। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "फसल चक्र, अवशेष प्रबंधन, प्रतिरोधी किस्में, संतुलित खाद।"
+  }
+ },
+ "Corn_(maize)___healthy": {
+  "en": {
+   "cause": "No disease detected.",
+   "symptoms": "The maize leaf looks healthy.",
+   "actions": [
+    "Continue balanced fertiliser and timely irrigation",
+    "Watch for fall armyworm damage in the leaf whorl"
+   ],
+   "prevention": "Keep checking plants every few days, especially after rain or humid weather.",
+   "name": "Healthy"
+  },
+  "type": "healthy",
+  "ta": {
+   "name": "ஆரோக்கியமானது",
+   "cause": "நோய் எதுவும் கண்டறியப்படவில்லை.",
+   "symptoms": "மக்காச்சோளம் இலை ஆரோக்கியமாகத் தெரிகிறது.",
+   "actions": [
+    "சமச்சீர் உரம், சரியான நேரப் பாசனம் தொடரவும்",
+    "இலைச் சுருளில் படைப்புழு சேதம் உள்ளதா எனப் பார்க்கவும்"
+   ],
+   "prevention": "குறிப்பாக மழை, ஈரக் காலத்திற்குப் பிறகு சில நாட்களுக்கு ஒருமுறை செடிகளைச் சோதிக்கவும்."
+  },
+  "hi": {
+   "name": "स्वस्थ",
+   "cause": "कोई रोग नहीं मिला।",
+   "symptoms": "मक्का की पत्ती स्वस्थ दिख रही है।",
+   "actions": [
+    "संतुलित खाद और समय पर सिंचाई जारी रखें",
+    "पत्ती के गोभ में फॉल आर्मीवर्म की जाँच करें"
+   ],
+   "prevention": "खासकर बारिश या नमी के बाद हर कुछ दिनों में पौधे जाँचते रहें।"
+  }
+ },
+ "Pepper,_bell___Bacterial_spot": {
+  "en": {
+   "cause": "Bacteria (Xanthomonas), spread by rain splash, infected seed and handling wet plants.",
+   "symptoms": "Small water-soaked spots that turn brown with a yellow halo; leaves may yellow and drop.",
+   "actions": [
+    "Remove and destroy infected leaves and fallen debris",
+    "Do not work in the field when plants are wet",
+    "Switch to drip or furrow irrigation instead of sprinklers"
+   ],
+   "treatment": "Copper-based bactericide sprays can slow the spread. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Use certified disease-free seed, rotate crops for 2–3 years, avoid overhead watering.",
+   "name": "Bacterial spot"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "பாக்டீரியா புள்ளி நோய்",
+   "cause": "பாக்டீரியா (சான்தோமோனாஸ்); மழைத் தெறிப்பு, நோயுற்ற விதை, ஈரச் செடிகளைத் தொடுதல் மூலம் பரவும்.",
+   "symptoms": "மஞ்சள் வளையத்துடன் சிறிய நீர் ஊறிய புள்ளிகள் பழுப்பாக மாறும்; இலைகள் உதிரும்.",
+   "actions": [
+    "பாதித்த இலைகள், உதிர்ந்தவற்றை அகற்றி அழிக்கவும்",
+    "செடிகள் ஈரமாக இருக்கும்போது வயலில் வேலை செய்ய வேண்டாம்",
+    "தெளிப்பான் பதிலாக சொட்டு / சால் பாசனம்"
+   ],
+   "treatment": "தாமிர அடிப்படையிலான தெளிப்பு பரவலைக் குறைக்கும். உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "சான்றளிக்கப்பட்ட விதை, 2–3 ஆண்டு பயிர் சுழற்சி, மேல்நீர்ப் பாசனம் தவிர்க்கவும்."
+  },
+  "hi": {
+   "name": "जीवाणु धब्बा",
+   "cause": "जीवाणु (ज़ैंथोमोनास); बारिश के छींटे, संक्रमित बीज और गीले पौधों को छूने से फैलता है।",
+   "symptoms": "पीले घेरे वाले छोटे पानी भरे धब्बे भूरे हो जाते हैं; पत्तियाँ गिरती हैं।",
+   "actions": [
+    "संक्रमित और गिरी पत्तियाँ हटाकर नष्ट करें",
+    "पौधे गीले हों तो खेत में काम न करें",
+    "फव्वारे की जगह ड्रिप / नाली सिंचाई करें"
+   ],
+   "treatment": "तांबा आधारित छिड़काव फैलाव कम कर सकता है। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "प्रमाणित बीज, 2–3 साल फसल चक्र, ऊपर से सिंचाई से बचें।"
+  }
+ },
+ "Pepper,_bell___healthy": {
+  "en": {
+   "cause": "No disease detected.",
+   "symptoms": "The pepper leaf looks healthy.",
+   "actions": [
+    "Maintain regular irrigation and mulching",
+    "Check undersides of leaves for mites and thrips"
+   ],
+   "prevention": "Keep checking plants every few days, especially after rain or humid weather.",
+   "name": "Healthy"
+  },
+  "type": "healthy",
+  "ta": {
+   "name": "ஆரோக்கியமானது",
+   "cause": "நோய் எதுவும் கண்டறியப்படவில்லை.",
+   "symptoms": "குடைமிளகாய் இலை ஆரோக்கியமாகத் தெரிகிறது.",
+   "actions": [
+    "சீரான பாசனம், மூடாக்கு தொடரவும்",
+    "இலைகளின் அடியில் சிலந்திப் பேன், இலைப்பேன் பார்க்கவும்"
+   ],
+   "prevention": "குறிப்பாக மழை, ஈரக் காலத்திற்குப் பிறகு சில நாட்களுக்கு ஒருமுறை செடிகளைச் சோதிக்கவும்."
+  },
+  "hi": {
+   "name": "स्वस्थ",
+   "cause": "कोई रोग नहीं मिला।",
+   "symptoms": "शिमला मिर्च की पत्ती स्वस्थ दिख रही है।",
+   "actions": [
+    "नियमित सिंचाई और मल्चिंग जारी रखें",
+    "पत्तियों के नीचे माइट और थ्रिप्स जाँचें"
+   ],
+   "prevention": "खासकर बारिश या नमी के बाद हर कुछ दिनों में पौधे जाँचते रहें।"
+  }
+ },
+ "Potato___Early_blight": {
+  "en": {
+   "cause": "Fungus (Alternaria solani), common on older or stressed plants in warm weather.",
+   "symptoms": "Dark brown spots with concentric rings (target-like) on older lower leaves, often with yellowing around them.",
+   "actions": [
+    "Remove infected lower leaves",
+    "Give balanced nitrogen and potash to reduce plant stress",
+    "Avoid overhead irrigation"
+   ],
+   "treatment": "Protective fungicide sprays (e.g. mancozeb or chlorothalonil group) when spots appear. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Crop rotation, certified seed tubers, destroy crop residue after harvest.",
+   "name": "Early blight"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "முன் கருகல் நோய்",
+   "cause": "பூஞ்சை (ஆல்டர்னேரியா); வெப்பமான காலத்தில் வயதான / அழுத்தமுள்ள செடிகளில் அதிகம்.",
+   "symptoms": "கீழ் இலைகளில் வளையங்களுடன் (இலக்கு போன்ற) கரும் பழுப்பு புள்ளிகள், சுற்றி மஞ்சள்.",
+   "actions": [
+    "பாதித்த கீழ் இலைகளை அகற்றவும்",
+    "செடி அழுத்தம் குறைய சமச்சீர் தழை, சாம்பல் சத்து",
+    "மேல்நீர்ப் பாசனம் தவிர்க்கவும்"
+   ],
+   "treatment": "புள்ளிகள் தோன்றும்போது பாதுகாப்பு பூஞ்சைக்கொல்லி தெளிப்பு (மான்கோசெப் போன்ற வகை). உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "பயிர் சுழற்சி, சான்றளிக்கப்பட்ட விதைக் கிழங்கு, அறுவடைக்குப் பின் கழிவுகளை அழிக்கவும்."
+  },
+  "hi": {
+   "name": "अगेती झुलसा",
+   "cause": "फफूंद (आल्टरनेरिया); गर्म मौसम में पुराने / कमज़ोर पौधों पर आम।",
+   "symptoms": "निचली पत्तियों पर छल्लेदार (निशाने जैसे) गहरे भूरे धब्बे, आसपास पीलापन।",
+   "actions": [
+    "प्रभावित निचली पत्तियाँ हटाएँ",
+    "पौधे का तनाव कम करने के लिए संतुलित नाइट्रोजन और पोटाश दें",
+    "ऊपर से सिंचाई न करें"
+   ],
+   "treatment": "धब्बे दिखने पर सुरक्षात्मक फफूंदनाशक छिड़काव (मैंकोज़ेब जैसा समूह)। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "फसल चक्र, प्रमाणित बीज कंद, कटाई के बाद अवशेष नष्ट करें।"
+  }
+ },
+ "Potato___Late_blight": {
+  "en": {
+   "cause": "Water mould (Phytophthora infestans); spreads very fast in cool, wet, humid weather.",
+   "symptoms": "Large, dark, water-soaked patches on leaves, white mould on the underside in humid conditions; stems and tubers can rot.",
+   "actions": [
+    "Act immediately — this disease can destroy a field within days",
+    "Remove and destroy infected plants (do not compost)",
+    "Avoid irrigation during cool, cloudy spells"
+   ],
+   "treatment": "Systemic plus contact fungicide sprays are usually required quickly. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Use healthy seed tubers, resistant varieties, earthing up to protect tubers, watch weather warnings.",
+   "name": "Late blight"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "பின் கருகல் நோய்",
+   "cause": "நீர்ப் பூஞ்சை (பைட்டோப்தோரா); குளிர், ஈரமான காலநிலையில் மிக வேகமாகப் பரவும்.",
+   "symptoms": "இலைகளில் பெரிய கருமையான நீர் ஊறிய திட்டுகள், அடியில் வெள்ளைப் பூஞ்சை; தண்டு, கிழங்கு அழுகலாம்.",
+   "actions": [
+    "உடனே செயல்படுங்கள் — சில நாட்களில் வயலையே அழிக்கும்",
+    "பாதித்த செடிகளை அகற்றி அழிக்கவும் (உரமாக்க வேண்டாம்)",
+    "குளிர், மேகமூட்டக் காலத்தில் பாசனம் தவிர்க்கவும்"
+   ],
+   "treatment": "பொதுவாக உள்ளுறிஞ்சும் + தொடு பூஞ்சைக்கொல்லி தெளிப்பு உடனே தேவை. உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "ஆரோக்கியமான விதைக் கிழங்கு, எதிர்ப்பு ரகங்கள், மண் அணைத்தல், வானிலை எச்சரிக்கைகளைக் கவனிக்கவும்."
+  },
+  "hi": {
+   "name": "पछेती झुलसा",
+   "cause": "जल फफूंद (फाइटोफ्थोरा); ठंडे, गीले मौसम में बहुत तेज़ी से फैलता है।",
+   "symptoms": "पत्तियों पर बड़े, गहरे पानी भरे धब्बे, नीचे सफ़ेद फफूंद; तना और कंद सड़ सकते हैं।",
+   "actions": [
+    "तुरंत कार्रवाई करें — कुछ ही दिनों में पूरा खेत नष्ट कर सकता है",
+    "संक्रमित पौधे हटाकर नष्ट करें (खाद न बनाएँ)",
+    "ठंडे, बादल वाले मौसम में सिंचाई न करें"
+   ],
+   "treatment": "आमतौर पर तुरंत प्रणालीगत + संपर्क फफूंदनाशक छिड़काव ज़रूरी। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "स्वस्थ बीज कंद, प्रतिरोधी किस्में, मिट्टी चढ़ाना, मौसम चेतावनी पर ध्यान दें।"
+  }
+ },
+ "Potato___healthy": {
+  "en": {
+   "cause": "No disease detected.",
+   "symptoms": "The potato leaf looks healthy.",
+   "actions": [
+    "Earth up plants to protect tubers",
+    "Watch closely during cool, humid weather for late blight"
+   ],
+   "prevention": "Keep checking plants every few days, especially after rain or humid weather.",
+   "name": "Healthy"
+  },
+  "type": "healthy",
+  "ta": {
+   "name": "ஆரோக்கியமானது",
+   "cause": "நோய் எதுவும் கண்டறியப்படவில்லை.",
+   "symptoms": "உருளைக்கிழங்கு இலை ஆரோக்கியமாகத் தெரிகிறது.",
+   "actions": [
+    "கிழங்கைப் பாதுகாக்க மண் அணைக்கவும்",
+    "குளிர், ஈரக் காலத்தில் பின் கருகலைக் கவனிக்கவும்"
+   ],
+   "prevention": "குறிப்பாக மழை, ஈரக் காலத்திற்குப் பிறகு சில நாட்களுக்கு ஒருமுறை செடிகளைச் சோதிக்கவும்."
+  },
+  "hi": {
+   "name": "स्वस्थ",
+   "cause": "कोई रोग नहीं मिला।",
+   "symptoms": "आलू की पत्ती स्वस्थ दिख रही है।",
+   "actions": [
+    "कंद बचाने के लिए मिट्टी चढ़ाएँ",
+    "ठंडे, नम मौसम में पछेती झुलसा पर नज़र रखें"
+   ],
+   "prevention": "खासकर बारिश या नमी के बाद हर कुछ दिनों में पौधे जाँचते रहें।"
+  }
+ },
+ "Tomato___Bacterial_spot": {
+  "en": {
+   "cause": "Bacteria (Xanthomonas), spread by infected seed, rain splash and tools.",
+   "symptoms": "Small, dark, greasy spots on leaves and fruit; leaves turn yellow and fall.",
+   "actions": [
+    "Remove infected leaves and fruit",
+    "Avoid handling plants when wet",
+    "Disinfect tools and stakes"
+   ],
+   "treatment": "Copper-based sprays can reduce spread. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Disease-free seed and seedlings, crop rotation, drip irrigation.",
+   "name": "Bacterial spot"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "பாக்டீரியா புள்ளி நோய்",
+   "cause": "பாக்டீரியா (சான்தோமோனாஸ்); நோயுற்ற விதை, மழைத் தெறிப்பு, கருவிகள் மூலம் பரவும்.",
+   "symptoms": "இலை, காய்களில் சிறிய கருமையான எண்ணெய்ப் புள்ளிகள்; இலைகள் மஞ்சளாகி உதிரும்.",
+   "actions": [
+    "பாதித்த இலைகள், காய்களை அகற்றவும்",
+    "ஈரமான செடிகளைத் தொட வேண்டாம்",
+    "கருவிகள், குச்சிகளைச் சுத்திகரிக்கவும்"
+   ],
+   "treatment": "தாமிர அடிப்படையிலான தெளிப்பு பரவலைக் குறைக்கும். உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "நோயற்ற விதை, நாற்று, பயிர் சுழற்சி, சொட்டு நீர்ப் பாசனம்."
+  },
+  "hi": {
+   "name": "जीवाणु धब्बा",
+   "cause": "जीवाणु (ज़ैंथोमोनास); संक्रमित बीज, बारिश के छींटे और औज़ारों से फैलता है।",
+   "symptoms": "पत्तियों और फलों पर छोटे, गहरे, चिकने धब्बे; पत्तियाँ पीली होकर गिरती हैं।",
+   "actions": [
+    "संक्रमित पत्तियाँ और फल हटाएँ",
+    "गीले पौधों को न छुएँ",
+    "औज़ार और डंडे कीटाणुरहित करें"
+   ],
+   "treatment": "तांबा आधारित छिड़काव फैलाव कम कर सकता है। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "रोगमुक्त बीज और पौध, फसल चक्र, ड्रिप सिंचाई।"
+  }
+ },
+ "Tomato___Early_blight": {
+  "en": {
+   "cause": "Fungus (Alternaria solani), favoured by warm, humid weather and plant stress.",
+   "symptoms": "Brown spots with concentric rings on older leaves, yellowing around spots, leaf drop from the bottom up.",
+   "actions": [
+    "Remove lower infected leaves",
+    "Stake plants and mulch to stop soil splash",
+    "Water at the base, in the morning"
+   ],
+   "treatment": "Protective fungicide sprays (e.g. mancozeb or chlorothalonil group) at early stage. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Rotate crops, remove plant debris, balanced fertiliser.",
+   "name": "Early blight"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "முன் கருகல் நோய்",
+   "cause": "பூஞ்சை (ஆல்டர்னேரியா); வெப்பம், ஈரப்பதம், செடி அழுத்தம் காரணம்.",
+   "symptoms": "வயதான இலைகளில் வளையங்களுடன் பழுப்பு புள்ளிகள், சுற்றி மஞ்சள்; கீழிருந்து இலை உதிர்வு.",
+   "actions": [
+    "பாதித்த கீழ் இலைகளை அகற்றவும்",
+    "மண் தெறிப்பைத் தடுக்க குச்சி கட்டி, மூடாக்கு இடவும்",
+    "காலையில் வேர்ப்பகுதியில் நீர் ஊற்றவும்"
+   ],
+   "treatment": "ஆரம்ப நிலையில் பாதுகாப்பு பூஞ்சைக்கொல்லி தெளிப்பு (மான்கோசெப் போன்ற வகை). உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "பயிர் சுழற்சி, செடிக் கழிவுகளை அகற்றுதல், சமச்சீர் உரம்."
+  },
+  "hi": {
+   "name": "अगेती झुलसा",
+   "cause": "फफूंद (आल्टरनेरिया); गर्म, नम मौसम और पौधे के तनाव से।",
+   "symptoms": "पुरानी पत्तियों पर छल्लेदार भूरे धब्बे, आसपास पीलापन; नीचे से पत्तियाँ गिरती हैं।",
+   "actions": [
+    "निचली संक्रमित पत्तियाँ हटाएँ",
+    "मिट्टी के छींटे रोकने के लिए सहारा दें और मल्चिंग करें",
+    "सुबह जड़ के पास पानी दें"
+   ],
+   "treatment": "शुरुआती अवस्था में सुरक्षात्मक फफूंदनाशक छिड़काव (मैंकोज़ेब जैसा समूह)। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "फसल चक्र, पौधों के अवशेष हटाएँ, संतुलित खाद।"
+  }
+ },
+ "Tomato___Late_blight": {
+  "en": {
+   "cause": "Water mould (Phytophthora infestans); very fast spread in cool, wet weather.",
+   "symptoms": "Large greasy grey-green to brown patches on leaves, white growth under leaves, brown firm rot on fruit.",
+   "actions": [
+    "Act immediately — can destroy the crop in days",
+    "Remove and destroy infected plants",
+    "Do not keep potato and tomato close together"
+   ],
+   "treatment": "Systemic plus contact fungicide sprays are usually required quickly. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Resistant varieties, wide spacing, avoid overhead irrigation, follow local blight warnings.",
+   "name": "Late blight"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "பின் கருகல் நோய்",
+   "cause": "நீர்ப் பூஞ்சை (பைட்டோப்தோரா); குளிர், ஈரக் காலத்தில் மிக வேகமாகப் பரவும்.",
+   "symptoms": "இலைகளில் பெரிய எண்ணெய்ப் பசை சாம்பல்-பச்சை / பழுப்பு திட்டுகள், அடியில் வெள்ளை வளர்ச்சி; காய்களில் பழுப்பு அழுகல்.",
+   "actions": [
+    "உடனே செயல்படுங்கள் — சில நாட்களில் பயிரை அழிக்கும்",
+    "பாதித்த செடிகளை அகற்றி அழிக்கவும்",
+    "உருளைக்கிழங்கு, தக்காளியை அருகருகே பயிரிட வேண்டாம்"
+   ],
+   "treatment": "பொதுவாக உள்ளுறிஞ்சும் + தொடு பூஞ்சைக்கொல்லி தெளிப்பு உடனே தேவை. உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "எதிர்ப்பு ரகங்கள், அகலமான இடைவெளி, மேல்நீர்ப் பாசனம் தவிர்க்கவும்."
+  },
+  "hi": {
+   "name": "पछेती झुलसा",
+   "cause": "जल फफूंद (फाइटोफ्थोरा); ठंडे, गीले मौसम में बहुत तेज़ फैलाव।",
+   "symptoms": "पत्तियों पर बड़े चिकने धूसर-हरे से भूरे धब्बे, नीचे सफ़ेद वृद्धि; फलों पर भूरा सख़्त सड़न।",
+   "actions": [
+    "तुरंत कार्रवाई करें — कुछ दिनों में फसल नष्ट कर सकता है",
+    "संक्रमित पौधे हटाकर नष्ट करें",
+    "आलू और टमाटर पास-पास न लगाएँ"
+   ],
+   "treatment": "आमतौर पर तुरंत प्रणालीगत + संपर्क फफूंदनाशक छिड़काव ज़रूरी। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "प्रतिरोधी किस्में, चौड़ी दूरी, ऊपर से सिंचाई से बचें।"
+  }
+ },
+ "Tomato___Leaf_Mold": {
+  "en": {
+   "cause": "Fungus (Passalora fulva), common in humid, poorly ventilated conditions (e.g. polyhouses).",
+   "symptoms": "Pale yellow patches on upper leaf surface with olive-green to brown velvety mould underneath.",
+   "actions": [
+    "Increase ventilation and spacing",
+    "Remove infected lower leaves",
+    "Reduce humidity; avoid wetting leaves"
+   ],
+   "treatment": "Fungicide spray if the disease keeps spreading. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Resistant varieties, good air flow, avoid excess nitrogen.",
+   "name": "Leaf mould"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "இலைப் பூஞ்சணம்",
+   "cause": "பூஞ்சை (பாசலோரா); ஈரமான, காற்றோட்டம் குறைந்த இடங்களில் (பசுமைக் குடில்) அதிகம்.",
+   "symptoms": "இலையின் மேற்புறம் வெளிர் மஞ்சள் திட்டுகள், அடியில் ஆலிவ்-பச்சை வெல்வெட் பூஞ்சணம்.",
+   "actions": [
+    "காற்றோட்டம், இடைவெளியை அதிகரிக்கவும்",
+    "பாதித்த கீழ் இலைகளை அகற்றவும்",
+    "ஈரப்பதம் குறைக்கவும்; இலைகளை நனைக்க வேண்டாம்"
+   ],
+   "treatment": "தொடர்ந்து பரவினால் பூஞ்சைக்கொல்லி தெளிப்பு. உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "எதிர்ப்பு ரகங்கள், நல்ல காற்றோட்டம், அதிக தழைச்சத்து தவிர்க்கவும்."
+  },
+  "hi": {
+   "name": "पत्ती फफूंद",
+   "cause": "फफूंद (पैसालोरा); नम, कम हवादार जगहों (पॉलीहाउस) में आम।",
+   "symptoms": "पत्ती की ऊपरी सतह पर हल्के पीले धब्बे, नीचे जैतूनी-हरी मखमली फफूंद।",
+   "actions": [
+    "हवा और पौधों के बीच दूरी बढ़ाएँ",
+    "संक्रमित निचली पत्तियाँ हटाएँ",
+    "नमी कम करें; पत्तियाँ गीली न करें"
+   ],
+   "treatment": "लगातार फैले तो फफूंदनाशक छिड़काव। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "प्रतिरोधी किस्में, अच्छा वायु संचार, ज़्यादा नाइट्रोजन से बचें।"
+  }
+ },
+ "Tomato___Septoria_leaf_spot": {
+  "en": {
+   "cause": "Fungus (Septoria lycopersici), spread by rain splash from infected debris.",
+   "symptoms": "Many small round spots with dark borders and grey-white centres on lower leaves.",
+   "actions": [
+    "Remove infected lower leaves",
+    "Mulch to stop soil splash",
+    "Water at the base"
+   ],
+   "treatment": "Protective fungicide sprays at first signs. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Crop rotation, remove weeds and debris, avoid overhead irrigation.",
+   "name": "Septoria leaf spot"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "செப்டோரியா இலைப்புள்ளி",
+   "cause": "பூஞ்சை (செப்டோரியா); நோயுற்ற கழிவுகளில் இருந்து மழைத் தெறிப்பால் பரவும்.",
+   "symptoms": "கீழ் இலைகளில் கரும் விளிம்பு, சாம்பல்-வெள்ளை நடுவுடன் பல சிறிய வட்டப் புள்ளிகள்.",
+   "actions": [
+    "பாதித்த கீழ் இலைகளை அகற்றவும்",
+    "மண் தெறிப்பைத் தடுக்க மூடாக்கு",
+    "வேர்ப்பகுதியில் நீர் ஊற்றவும்"
+   ],
+   "treatment": "முதல் அறிகுறியில் பாதுகாப்பு பூஞ்சைக்கொல்லி தெளிப்பு. உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "பயிர் சுழற்சி, களை, கழிவுகளை அகற்றுதல், மேல்நீர்ப் பாசனம் தவிர்க்கவும்."
+  },
+  "hi": {
+   "name": "सेप्टोरिया पत्ती धब्बा",
+   "cause": "फफूंद (सेप्टोरिया); संक्रमित अवशेषों से बारिश के छींटों द्वारा फैलता है।",
+   "symptoms": "निचली पत्तियों पर गहरे किनारे और धूसर-सफ़ेद बीच वाले कई छोटे गोल धब्बे।",
+   "actions": [
+    "निचली संक्रमित पत्तियाँ हटाएँ",
+    "मिट्टी के छींटे रोकने के लिए मल्चिंग करें",
+    "जड़ के पास पानी दें"
+   ],
+   "treatment": "पहले लक्षण पर सुरक्षात्मक फफूंदनाशक छिड़काव। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "फसल चक्र, खरपतवार और अवशेष हटाएँ, ऊपर से सिंचाई न करें।"
+  }
+ },
+ "Tomato___Spider_mites Two-spotted_spider_mite": {
+  "en": {
+   "cause": "Pest: two-spotted spider mite (Tetranychus urticae), increases in hot, dry, dusty conditions.",
+   "symptoms": "Fine yellow speckling on leaves, fine webbing on the underside, leaves turn bronze and dry.",
+   "actions": [
+    "Spray a strong jet of water on leaf undersides",
+    "Remove heavily infested leaves",
+    "Keep plants well watered and reduce dust"
+   ],
+   "treatment": "Neem oil or a recommended miticide if the population is high. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Avoid unnecessary broad-spectrum insecticides that kill natural predators; monitor in dry spells.",
+   "name": "Spider mites"
+  },
+  "type": "pest",
+  "ta": {
+   "name": "சிலந்திப் பேன்",
+   "cause": "பூச்சி: இரு புள்ளி சிலந்திப் பேன்; வெப்பம், வறட்சி, தூசி நிறைந்த சூழலில் பெருகும்.",
+   "symptoms": "இலைகளில் நுண்ணிய மஞ்சள் புள்ளிகள், அடியில் மெல்லிய வலை; இலைகள் வெண்கல நிறமாகி காயும்.",
+   "actions": [
+    "இலைகளின் அடியில் வேகமான நீர்ப் பீச்சு அடிக்கவும்",
+    "அதிகம் பாதித்த இலைகளை அகற்றவும்",
+    "செடிகளுக்கு நன்றாக நீர் கொடுத்து தூசியைக் குறைக்கவும்"
+   ],
+   "treatment": "எண்ணிக்கை அதிகமானால் வேப்ப எண்ணெய் அல்லது பரிந்துரைக்கப்பட்ட சிலந்திக்கொல்லி. உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "இயற்கை எதிரிகளைக் கொல்லும் பரந்த பூச்சிக்கொல்லிகளைத் தவிர்க்கவும்; வறண்ட காலத்தில் கண்காணிக்கவும்."
+  },
+  "hi": {
+   "name": "मकड़ी (माइट)",
+   "cause": "कीट: दो-धब्बेदार मकड़ी माइट; गर्म, सूखे, धूल भरे मौसम में बढ़ती है।",
+   "symptoms": "पत्तियों पर बारीक पीले बिंदु, नीचे महीन जाला; पत्तियाँ कांस्य रंग की होकर सूखती हैं।",
+   "actions": [
+    "पत्तियों के नीचे तेज़ पानी की धार मारें",
+    "ज़्यादा प्रभावित पत्तियाँ हटाएँ",
+    "पौधों को अच्छा पानी दें और धूल कम करें"
+   ],
+   "treatment": "संख्या ज़्यादा हो तो नीम तेल या सुझाया गया माइटनाशक। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "प्राकृतिक शत्रुओं को मारने वाले व्यापक कीटनाशकों से बचें; सूखे समय में निगरानी करें।"
+  }
+ },
+ "Tomato___Target_Spot": {
+  "en": {
+   "cause": "Fungus (Corynespora cassiicola), favoured by warm, humid weather.",
+   "symptoms": "Brown spots with light centres and concentric rings on leaves; can affect fruit.",
+   "actions": [
+    "Remove infected leaves",
+    "Prune for better air flow",
+    "Avoid wetting leaves"
+   ],
+   "treatment": "Fungicide spray if spreading. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Crop rotation, remove debris, wider spacing.",
+   "name": "Target spot"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "இலக்குப் புள்ளி நோய்",
+   "cause": "பூஞ்சை (கோரினெஸ்போரா); வெப்பம், ஈரப்பதம் காரணம்.",
+   "symptoms": "இலைகளில் வெளிர் நடு, வளையங்களுடன் பழுப்பு புள்ளிகள்; காய்களையும் பாதிக்கலாம்.",
+   "actions": [
+    "பாதித்த இலைகளை அகற்றவும்",
+    "காற்றோட்டத்திற்குக் கவாத்து செய்யவும்",
+    "இலைகளை நனைக்க வேண்டாம்"
+   ],
+   "treatment": "பரவினால் பூஞ்சைக்கொல்லி தெளிப்பு. உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "பயிர் சுழற்சி, கழிவுகளை அகற்றுதல், அகலமான இடைவெளி."
+  },
+  "hi": {
+   "name": "लक्ष्य धब्बा",
+   "cause": "फफूंद (कोरिनेस्पोरा); गर्म, नम मौसम से बढ़ता है।",
+   "symptoms": "पत्तियों पर हल्के बीच और छल्लों वाले भूरे धब्बे; फल भी प्रभावित हो सकते हैं।",
+   "actions": [
+    "संक्रमित पत्तियाँ हटाएँ",
+    "हवा के लिए छँटाई करें",
+    "पत्तियाँ गीली न करें"
+   ],
+   "treatment": "फैले तो फफूंदनाशक छिड़काव। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "फसल चक्र, अवशेष हटाएँ, चौड़ी दूरी।"
+  }
+ },
+ "Tomato___Tomato_Yellow_Leaf_Curl_Virus": {
+  "en": {
+   "cause": "Virus spread by whiteflies.",
+   "symptoms": "Leaves curl upward, become small and yellow at the edges; plants are stunted with few fruits.",
+   "actions": [
+    "Pull out and destroy infected plants early",
+    "Control whiteflies with yellow sticky traps",
+    "Remove weeds that host whiteflies"
+   ],
+   "treatment": "There is no cure for the virus; manage whiteflies (neem-based or recommended insecticide). Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Resistant varieties, insect-proof nursery net, yellow sticky traps, barrier crops like maize.",
+   "name": "Yellow leaf curl virus"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "மஞ்சள் இலைச் சுருள் வைரஸ்",
+   "cause": "வெள்ளை ஈக்களால் பரவும் வைரஸ்.",
+   "symptoms": "இலைகள் மேல்நோக்கிச் சுருண்டு, சிறிதாகி, ஓரங்களில் மஞ்சளாகும்; செடி குட்டையாகி காய் குறையும்.",
+   "actions": [
+    "பாதித்த செடிகளை ஆரம்பத்திலேயே பிடுங்கி அழிக்கவும்",
+    "மஞ்சள் ஒட்டும் பொறிகளால் வெள்ளை ஈயைக் கட்டுப்படுத்தவும்",
+    "வெள்ளை ஈ தங்கும் களைகளை அகற்றவும்"
+   ],
+   "treatment": "வைரஸுக்கு மருந்து இல்லை; வெள்ளை ஈயைக் கட்டுப்படுத்தவும் (வேப்ப அடிப்படை அல்லது பரிந்துரைக்கப்பட்டது). உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "எதிர்ப்பு ரகங்கள், பூச்சி வலை நாற்றங்கால், மஞ்சள் பொறிகள், மக்காச்சோளம் போன்ற தடுப்புப் பயிர்."
+  },
+  "hi": {
+   "name": "पीला पत्ती मोड़ वायरस",
+   "cause": "सफ़ेद मक्खी से फैलने वाला वायरस।",
+   "symptoms": "पत्तियाँ ऊपर की ओर मुड़ती, छोटी और किनारों पर पीली होती हैं; पौधा बौना, फल कम।",
+   "actions": [
+    "संक्रमित पौधे जल्दी उखाड़कर नष्ट करें",
+    "पीले चिपचिपे जाल से सफ़ेद मक्खी नियंत्रित करें",
+    "सफ़ेद मक्खी वाले खरपतवार हटाएँ"
+   ],
+   "treatment": "वायरस का कोई इलाज नहीं; सफ़ेद मक्खी नियंत्रित करें (नीम आधारित या सुझाया गया)। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "प्रतिरोधी किस्में, कीट-रोधी जाली नर्सरी, पीले जाल, मक्का जैसी अवरोधक फसल।"
+  }
+ },
+ "Tomato___Tomato_mosaic_virus": {
+  "en": {
+   "cause": "Virus, spread by touch, tools, infected seed and plant debris.",
+   "symptoms": "Light and dark green mottled (mosaic) pattern on leaves, leaf distortion, stunted growth.",
+   "actions": [
+    "Remove and destroy infected plants",
+    "Wash hands and disinfect tools after handling",
+    "Do not smoke or use tobacco near plants"
+   ],
+   "treatment": "There is no chemical cure; prevent spread. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Use certified seed, resistant varieties, field hygiene.",
+   "name": "Mosaic virus"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "மொசைக் வைரஸ்",
+   "cause": "தொடுதல், கருவிகள், நோயுற்ற விதை, கழிவுகள் மூலம் பரவும் வைரஸ்.",
+   "symptoms": "இலைகளில் வெளிர் / அடர் பச்சை கலந்த (மொசைக்) தோற்றம், இலை உருக்குலைவு, வளர்ச்சி குன்றல்.",
+   "actions": [
+    "பாதித்த செடிகளை அகற்றி அழிக்கவும்",
+    "கையாண்ட பின் கைகளைக் கழுவி, கருவிகளைச் சுத்திகரிக்கவும்",
+    "செடிகளுக்கு அருகில் புகையிலைப் பயன்பாடு வேண்டாம்"
+   ],
+   "treatment": "வேதியியல் மருந்து இல்லை; பரவலைத் தடுக்கவும். உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "சான்றளிக்கப்பட்ட விதை, எதிர்ப்பு ரகங்கள், வயல் சுகாதாரம்."
+  },
+  "hi": {
+   "name": "मोज़ेक वायरस",
+   "cause": "छूने, औज़ारों, संक्रमित बीज और अवशेषों से फैलने वाला वायरस।",
+   "symptoms": "पत्तियों पर हल्का-गहरा हरा चितकबरा (मोज़ेक) रूप, पत्ती विकृति, रुकी हुई बढ़वार।",
+   "actions": [
+    "संक्रमित पौधे हटाकर नष्ट करें",
+    "छूने के बाद हाथ धोएँ और औज़ार कीटाणुरहित करें",
+    "पौधों के पास तंबाकू का उपयोग न करें"
+   ],
+   "treatment": "कोई रासायनिक इलाज नहीं; फैलाव रोकें। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "प्रमाणित बीज, प्रतिरोधी किस्में, खेत की स्वच्छता।"
+  }
+ },
+ "Tomato___healthy": {
+  "en": {
+   "cause": "No disease detected.",
+   "symptoms": "The tomato leaf looks healthy.",
+   "actions": [
+    "Stake plants and water at the base",
+    "Check for whiteflies and leaf spots twice a week"
+   ],
+   "prevention": "Keep checking plants every few days, especially after rain or humid weather.",
+   "name": "Healthy"
+  },
+  "type": "healthy",
+  "ta": {
+   "name": "ஆரோக்கியமானது",
+   "cause": "நோய் எதுவும் கண்டறியப்படவில்லை.",
+   "symptoms": "தக்காளி இலை ஆரோக்கியமாகத் தெரிகிறது.",
+   "actions": [
+    "குச்சி கட்டி, வேர்ப்பகுதியில் நீர் ஊற்றவும்",
+    "வாரம் இருமுறை வெள்ளை ஈ, இலைப்புள்ளிகளைச் சோதிக்கவும்"
+   ],
+   "prevention": "குறிப்பாக மழை, ஈரக் காலத்திற்குப் பிறகு சில நாட்களுக்கு ஒருமுறை செடிகளைச் சோதிக்கவும்."
+  },
+  "hi": {
+   "name": "स्वस्थ",
+   "cause": "कोई रोग नहीं मिला।",
+   "symptoms": "टमाटर की पत्ती स्वस्थ दिख रही है।",
+   "actions": [
+    "पौधों को सहारा दें और जड़ में पानी दें",
+    "हफ़्ते में दो बार सफ़ेद मक्खी और धब्बे जाँचें"
+   ],
+   "prevention": "खासकर बारिश या नमी के बाद हर कुछ दिनों में पौधे जाँचते रहें।"
+  }
+ },
+ "Rice___BrownSpot": {
+  "en": {
+   "cause": "Fungus (Bipolaris oryzae); more common in nutrient-poor soils and stressed crops.",
+   "symptoms": "Oval brown spots with grey centres on leaves; grains may also get spots.",
+   "actions": [
+    "Apply balanced fertiliser, especially potash, as advised after soil test",
+    "Keep proper water in the field"
+   ],
+   "treatment": "Seed treatment and fungicide spray if the disease is severe. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Use healthy, treated seed; improve soil fertility; remove infected stubble.",
+   "name": "Brown spot"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "பழுப்புப் புள்ளி நோய்",
+   "cause": "பூஞ்சை (பைபோலாரிஸ்); சத்து குறைந்த மண், அழுத்தமுள்ள பயிரில் அதிகம்.",
+   "symptoms": "இலைகளில் சாம்பல் நடுவுடன் முட்டை வடிவ பழுப்பு புள்ளிகள்; தானியங்களிலும் புள்ளி வரலாம்.",
+   "actions": [
+    "மண் பரிசோதனைப்படி சமச்சீர் உரம், குறிப்பாக சாம்பல் சத்து இடவும்",
+    "வயலில் சரியான நீர்மட்டம் வைக்கவும்"
+   ],
+   "treatment": "கடுமையானால் விதை நேர்த்தி, பூஞ்சைக்கொல்லி தெளிப்பு. உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "ஆரோக்கியமான நேர்த்தி செய்த விதை, மண் வளம், பாதித்த தாள்களை அகற்றுதல்."
+  },
+  "hi": {
+   "name": "भूरा धब्बा",
+   "cause": "फफूंद (बाइपोलेरिस); कम पोषक मिट्टी और कमज़ोर फसल में आम।",
+   "symptoms": "पत्तियों पर धूसर बीच वाले अंडाकार भूरे धब्बे; दानों पर भी धब्बे हो सकते हैं।",
+   "actions": [
+    "मिट्टी जाँच के अनुसार संतुलित खाद, खासकर पोटाश दें",
+    "खेत में उचित पानी रखें"
+   ],
+   "treatment": "गंभीर हो तो बीज उपचार और फफूंदनाशक छिड़काव। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "स्वस्थ उपचारित बीज, मिट्टी की उर्वरता, संक्रमित ठूँठ हटाएँ।"
+  }
+ },
+ "Rice___Healthy": {
+  "en": {
+   "cause": "No disease detected.",
+   "symptoms": "The rice leaf looks healthy.",
+   "actions": [
+    "Maintain recommended water level",
+    "Monitor for leaf blast and stem borer regularly"
+   ],
+   "prevention": "Keep checking plants every few days, especially after rain or humid weather.",
+   "name": "Healthy"
+  },
+  "type": "healthy",
+  "ta": {
+   "name": "ஆரோக்கியமானது",
+   "cause": "நோய் எதுவும் கண்டறியப்படவில்லை.",
+   "symptoms": "நெல் இலை ஆரோக்கியமாகத் தெரிகிறது.",
+   "actions": [
+    "பரிந்துரைக்கப்பட்ட நீர்மட்டம் வைக்கவும்",
+    "இலை வெடிப்பு, தண்டுத் துளைப்பான் கண்காணிக்கவும்"
+   ],
+   "prevention": "குறிப்பாக மழை, ஈரக் காலத்திற்குப் பிறகு சில நாட்களுக்கு ஒருமுறை செடிகளைச் சோதிக்கவும்."
+  },
+  "hi": {
+   "name": "स्वस्थ",
+   "cause": "कोई रोग नहीं मिला।",
+   "symptoms": "धान की पत्ती स्वस्थ दिख रही है।",
+   "actions": [
+    "सुझाया गया जल स्तर रखें",
+    "पत्ती ब्लास्ट और तना छेदक की निगरानी करें"
+   ],
+   "prevention": "खासकर बारिश या नमी के बाद हर कुछ दिनों में पौधे जाँचते रहें।"
+  }
+ },
+ "Rice___Hispa": {
+  "en": {
+   "cause": "Pest: rice hispa beetle (Dicladispa armigera); adults scrape leaves and grubs mine inside them.",
+   "symptoms": "White parallel streaks or blotches on leaves, leaf tips dry; small spiny dark beetles visible.",
+   "actions": [
+    "Clip and destroy affected leaf tips at the nursery/transplanting stage",
+    "Remove grassy weeds around the field"
+   ],
+   "treatment": "Insecticide spray only if damage is above the threshold advised locally. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Avoid excess nitrogen, close planting and early detection in nurseries.",
+   "name": "Rice hispa"
+  },
+  "type": "pest",
+  "ta": {
+   "name": "நெல் ஹிஸ்பா",
+   "cause": "பூச்சி: நெல் ஹிஸ்பா வண்டு; வண்டுகள் இலையைச் சுரண்டும், புழுக்கள் இலைக்குள் துளைக்கும்.",
+   "symptoms": "இலைகளில் வெள்ளை இணைக் கோடுகள் / திட்டுகள், இலை நுனி காயும்; சிறிய முள்ளுள்ள கருப்பு வண்டுகள் தெரியும்.",
+   "actions": [
+    "நாற்றங்கால் / நடவு நிலையில் பாதித்த இலை நுனிகளை வெட்டி அழிக்கவும்",
+    "வயலைச் சுற்றிய புல் களைகளை அகற்றவும்"
+   ],
+   "treatment": "உள்ளூரில் பரிந்துரைக்கப்பட்ட பொருளாதார சேத நிலையைத் தாண்டினால் மட்டும் பூச்சிக்கொல்லி. உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "அதிக தழைச்சத்து, நெருக்க நடவு தவிர்க்கவும்; நாற்றங்காலில் ஆரம்பக் கண்டறிதல்."
+  },
+  "hi": {
+   "name": "धान हिस्पा",
+   "cause": "कीट: धान हिस्पा भृंग; वयस्क पत्तियाँ खुरचते हैं और सूँडी पत्ती के अंदर सुरंग बनाती है।",
+   "symptoms": "पत्तियों पर सफ़ेद समानांतर धारियाँ / धब्बे, पत्ती की नोक सूखती है; छोटे काँटेदार काले भृंग दिखते हैं।",
+   "actions": [
+    "नर्सरी / रोपाई के समय प्रभावित पत्ती की नोकें काटकर नष्ट करें",
+    "खेत के आसपास घास वाले खरपतवार हटाएँ"
+   ],
+   "treatment": "स्थानीय रूप से बताई गई आर्थिक सीमा पार होने पर ही कीटनाशक छिड़काव। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "ज़्यादा नाइट्रोजन और घनी रोपाई से बचें; नर्सरी में जल्दी पहचान।"
+  }
+ },
+ "Rice___LeafBlast": {
+  "en": {
+   "cause": "Fungus (Magnaporthe oryzae), favoured by high humidity, cool nights and excess nitrogen.",
+   "symptoms": "Diamond / spindle-shaped spots with grey centres and brown borders on leaves.",
+   "actions": [
+    "Avoid extra nitrogen fertiliser for now",
+    "Keep water in the field; do not let the crop dry out"
+   ],
+   "treatment": "Systemic fungicide spray (e.g. tricyclazole group) is often needed when blast spreads. Consult your local KVK / agriculture officer for the product and dose approved in your area; follow the label.",
+   "prevention": "Resistant varieties, split nitrogen application, seed treatment, remove infected stubble.",
+   "name": "Leaf blast"
+  },
+  "type": "disease",
+  "ta": {
+   "name": "இலை வெடிப்பு நோய்",
+   "cause": "பூஞ்சை (மேக்னபோர்தே); அதிக ஈரப்பதம், குளிர் இரவுகள், அதிக தழைச்சத்து காரணம்.",
+   "symptoms": "இலைகளில் சாம்பல் நடு, பழுப்பு விளிம்புடன் வைர / கதிர் வடிவ புள்ளிகள்.",
+   "actions": [
+    "இப்போதைக்கு கூடுதல் தழைச்சத்து இட வேண்டாம்",
+    "வயலில் நீர் வைக்கவும்; பயிர் காய விட வேண்டாம்"
+   ],
+   "treatment": "வெடிப்பு பரவும்போது பெரும்பாலும் உள்ளுறிஞ்சும் பூஞ்சைக்கொல்லி (ட்ரைசைக்ளசோல் வகை) தேவை. உங்கள் பகுதியில் அங்கீகரிக்கப்பட்ட மருந்து, அளவுக்கு உங்கள் KVK / வேளாண் அலுவலரை அணுகவும்; லேபிளைப் பின்பற்றவும்.",
+   "prevention": "எதிர்ப்பு ரகங்கள், தழைச்சத்தைப் பிரித்து இடுதல், விதை நேர்த்தி, பாதித்த தாள்களை அகற்றுதல்."
+  },
+  "hi": {
+   "name": "पत्ती ब्लास्ट (झोंका)",
+   "cause": "फफूंद (मैग्नापोर्थे); ज़्यादा नमी, ठंडी रातें और ज़्यादा नाइट्रोजन से।",
+   "symptoms": "पत्तियों पर धूसर बीच और भूरे किनारे वाले हीरे / नाव आकार के धब्बे।",
+   "actions": [
+    "अभी अतिरिक्त नाइट्रोजन खाद न डालें",
+    "खेत में पानी रखें; फसल को सूखने न दें"
+   ],
+   "treatment": "ब्लास्ट फैलने पर अक्सर प्रणालीगत फफूंदनाशक (ट्राइसाइक्लाज़ोल समूह) ज़रूरी। अपने क्षेत्र में स्वीकृत दवा और मात्रा के लिए अपने KVK / कृषि अधिकारी से सलाह लें; लेबल का पालन करें।",
+   "prevention": "प्रतिरोधी किस्में, नाइट्रोजन किस्तों में, बीज उपचार, संक्रमित ठूँठ हटाएँ।"
+  }
+ }
+}
