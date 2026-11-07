@@ -582,7 +582,7 @@ fun ProfileScreen(state: AppState, onAbout: () -> Unit) {
                 SettingRow(Icons.Rounded.DeleteForever, state.t("delete_profile"), null, danger = true) { confirm = "delete" }
             }
             Spacer(Modifier.height(8.dp))
-            Text("${state.t("app")} · v2.1 · Bharat AI-SoC Challenge 2026–27", fontSize = 12.sp, color = Palette.InkSoft,
+            Text("${state.t("app")} · v3.0 · Bharat AI-SoC Challenge 2026–27", fontSize = 12.sp, color = Palette.InkSoft,
                 modifier = Modifier.align(Alignment.CenterHorizontally))
             Spacer(Modifier.height(24.dp))
         }
