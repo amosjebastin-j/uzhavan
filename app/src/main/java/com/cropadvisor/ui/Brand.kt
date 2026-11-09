@@ -72,7 +72,7 @@ fun UzhavanLogo(size: Dp, modifier: Modifier = Modifier, animated: Boolean = fal
         val k = intro.value
 
         if (badge) {
-            drawRoundRect(Brush.linearGradient(listOf(Color(0xFF13563F), Color(0xFF0B3D2E), Color(0xFF06231A)),
+            drawRoundRect(Brush.linearGradient(listOf(Color(0xFF146B5A), Color(0xFF0A4A3F), Color(0xFF04201B)),
                 start = Offset.Zero, end = Offset(s, s)), cornerRadius = CornerRadius(s * 0.30f))
             drawRoundRect(Palette.Gold.copy(alpha = 0.45f), cornerRadius = CornerRadius(s * 0.30f),
                 style = Stroke(s * 0.018f))

@@ -16,8 +16,25 @@ step "1/5  Checking project files"
 chmod +x gradlew
 mkdir -p app/libs app/src/main/assets
 [ -f app/libs/executorch.aar ] || cp "$(find $ET/extension/android -name '*release*.aar' | head -1)" app/libs/executorch.aar || die "executorch.aar not found — run: bash $ET/scripts/build_android_library.sh"
-cp -u ~/crop/crop_mnv3.pte app/src/main/assets/ || die "~/crop/crop_mnv3.pte missing"   # -u: newest model wins
-cp -u ~/crop/labels.json  app/src/main/assets/ || die "~/crop/labels.json missing"
+# newest trained weights (v3, else v2) → convert to crop_mnv3.pte if the .pte is older than them
+W=$(ls -t ~/crop/crop_mnv3_v3.pth ~/crop/crop_mnv3_v2.pth 2>/dev/null | head -1)
+if [ -n "$W" ] && { [ "$W" -nt ~/crop/crop_mnv3.pte ] || [ ! ~/crop/.pte_ok -nt ~/crop/crop_mnv3.pte ]; }; then
+    echo "   Converting $(basename "$W") → crop_mnv3.pte (ExecuTorch + XNNPACK)…"
+    # shellcheck disable=SC1090
+    source ~/et-env/bin/activate || die "~/et-env not found"
+    [ -f ~/crop/crop_mnv3.pte ] && cp ~/crop/crop_mnv3.pte ~/crop/crop_mnv3_prev.pte
+    ( cd ~/crop && python ~/CropAdvisor/training/export_vision.py ) || die "vision export failed"
+    # never install a broken model: compare the .pte with PyTorch, else go back to the previous one
+    if ( cd ~/crop && python ~/CropAdvisor/training/verify_pte.py "$W" ); then
+        touch ~/crop/.pte_ok; ok "Vision model converted and verified"
+    else
+        [ -f ~/crop/crop_mnv3_prev.pte ] && mv ~/crop/crop_mnv3_prev.pte ~/crop/crop_mnv3.pte
+        touch ~/crop/crop_mnv3.pte ~/crop/.pte_ok
+        echo "   ⚠ New model failed the check — keeping the previous working model."
+    fi
+fi
+cp ~/crop/crop_mnv3.pte app/src/main/assets/ || die "~/crop/crop_mnv3.pte missing"   # always the verified model
+cp ~/crop/labels.json app/src/main/assets/ || die "~/crop/labels.json missing"
 [ -f local.properties ] || echo "sdk.dir=$HOME/Android/Sdk" > local.properties
 grep -q java.home gradle.properties || echo "org.gradle.java.home=/usr/lib/jvm/java-17-openjdk-amd64" >> gradle.properties
 ok "Project files ready"
@@ -49,7 +66,7 @@ ok "Phone connected: $(adb shell getprop ro.product.model | tr -d '\r')"
 
 step "4/5  Copying Llama to the phone"
 adb shell mkdir -p /data/local/tmp/llama
-if [ ! -f $ET/.llama_pushed ]; then
+if [ ! -f $ET/.llama_pushed ] || ! adb shell ls /data/local/tmp/llama/llama3_2_1b_instruct.pte >/dev/null 2>&1; then
     adb push $ET/llama3_2_1b_instruct.pte /data/local/tmp/llama/ || die "push failed"
     adb push $LLAMA_DIR/tokenizer.model /data/local/tmp/llama/ || die "push failed"
     touch $ET/.llama_pushed

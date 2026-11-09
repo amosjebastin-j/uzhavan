@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="cream">#F6F4EC</color>
-    <color name="forest">#0B3D2E</color>
+    <color name="cream">#F4F7F5</color>
+    <color name="forest">#0A4A3F</color>
     <color name="leaf">#52B788</color>
 </resources>

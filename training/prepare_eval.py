@@ -44,6 +44,21 @@ if not os.path.isdir(PD):
     print('Downloading PlantDoc (real-field photos)…')
     subprocess.run(['git', 'clone', '--depth', '1', 'https://github.com/pratikkayal/PlantDoc-Dataset.git', PD], check=True)
 
+# Photos that also appear (near-duplicates) in a model's training data are left out, so v2 and v3 are compared on
+# exactly the same clean set. The list comes from the Kaggle check cell: ~/crop/leaked_test_photos.txt
+LEAK = next((p for p in (f'{CROP}/leaked_test_photos.txt',
+             os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'docs', 'leaked_test_photos.txt'))
+             if os.path.exists(p)), '')
+leaked = set()
+if os.path.exists(LEAK):
+    for line in open(LEAK):
+        parts = line.strip().split('/')
+        if len(parts) >= 2: leaked.add((parts[-2], parts[-1]))
+    print(f'Leaving out {len(leaked)} test photos that appear in v3 training data (clean test)')
+for root, _, files in os.walk(OUT):                 # refresh PlantDoc copies; keep your own photos
+    for f in files:
+        if f.startswith('pd_'): os.remove(os.path.join(root, f))
+
 count = collections.Counter()
 test = f'{PD}/test'
 for folder in sorted(os.listdir(test)):
@@ -51,6 +66,7 @@ for folder in sorted(os.listdir(test)):
     if lab not in labels: print(f'  skip  {folder}'); continue
     dst = f'{OUT}/{key(lab)}'; os.makedirs(dst, exist_ok=True)
     for i, f in enumerate(sorted(os.listdir(f'{test}/{folder}'))):
+        if (folder, f) in leaked: continue
         if f.lower().endswith(EXT):
             shutil.copy(f'{test}/{folder}/{f}', f'{dst}/pd_{key(folder)}_{i}{os.path.splitext(f)[1].lower()}')
 for d in sorted(os.listdir(OUT)):

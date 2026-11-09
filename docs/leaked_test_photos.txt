@@ -1,0 +1,83 @@
+data/plantdoc/test/Apple leaf/apple-leaf-isolated-white-background-56631026.jpg
+data/plantdoc/test/Cherry leaf/ed12ff77ce021883de241830dee55e2e53d2c93231699_1260x1260.jpg
+data/plantdoc/test/Corn Gray leaf spot/IMG_42231.jpg
+data/plantdoc/test/Corn Gray leaf spot/rsz0803Figure6.jpg
+data/plantdoc/test/Corn Gray leaf spot/show_picture.asp?id=aaaaaaaaaaogcqq&w2=420&h2=378&clip=center,420,378&meta=0.jpg
+data/plantdoc/test/Corn Gray leaf spot/strom5.jpg
+data/plantdoc/test/Corn leaf blight/02c.jpg
+data/plantdoc/test/Corn leaf blight/0796.20graylssymt.jpg
+data/plantdoc/test/Corn leaf blight/07c.jpg
+data/plantdoc/test/Corn leaf blight/0c.jpg
+data/plantdoc/test/Corn leaf blight/1321189.jpg
+data/plantdoc/test/Corn leaf blight/160314_web.jpg
+data/plantdoc/test/Corn leaf blight/2013Corn_GrayLeafSpot_0815_0003.JPG.jpg
+data/plantdoc/test/Corn leaf blight/2015070295153021.jpg
+data/plantdoc/test/Corn leaf blight/Common%20Diseases%20Figure%201.JPG.jpg
+data/plantdoc/test/Corn leaf blight/Corn-SCLB-2017-1.jpg
+data/plantdoc/test/Corn leaf blight/corn-disease-update-fig-3-gray-leaf-spot.jpg
+data/plantdoc/test/Corn leaf blight/corn-gray-leaf-spot-f4.jpg
+data/plantdoc/test/Corn rust leaf/0796.39maizerust.jpg
+data/plantdoc/test/Corn rust leaf/0796.40comrust.jpg
+data/plantdoc/test/Corn rust leaf/0796.47southrust.jpg
+data/plantdoc/test/Corn rust leaf/0796.52srusttelia.jpg
+data/plantdoc/test/Corn rust leaf/12-19striprustJIM.jpg
+data/plantdoc/test/Corn rust leaf/1355.50commonrust.jpg
+data/plantdoc/test/Corn rust leaf/2256-body-1501555581-1.jpg
+data/plantdoc/test/Corn rust leaf/393.jpg
+data/plantdoc/test/Corn rust leaf/5496239405_d95bdb97d1_z.jpg
+data/plantdoc/test/Corn rust leaf/80104747.jpg
+data/plantdoc/test/Potato leaf early blight/early-blight-or-target-spot-alternaria-solani-lesions-on-a-tomato-AXK6AY.jpg
+data/plantdoc/test/Potato leaf early blight/earlyblightpotato.jpg
+data/plantdoc/test/Potato leaf late blight/5816740026_d42ef24413_Phytophthora-Infestans.jpg
+data/plantdoc/test/Tomato Early blight leaf/100983448.jpg
+data/plantdoc/test/Tomato Early blight leaf/1234080-Early-Blight.jpg
+data/plantdoc/test/Tomato Early blight leaf/Shoemaker_7068.JPG.jpg
+data/plantdoc/test/Tomato Early blight leaf/bugs-and-blight-061.jpg
+data/plantdoc/test/Tomato Early blight leaf/dscn3175.jpg
+data/plantdoc/test/Tomato Early blight leaf/early_blight1-150x150.jpg
+data/plantdoc/test/Tomato Early blight leaf/earlyblight21_.jpg
+data/plantdoc/test/Tomato Early blight leaf/tomato_early-blight_01_zoom.jpg
+data/plantdoc/test/Tomato Septoria leaf spot/2STEM.jpg
+data/plantdoc/test/Tomato Septoria leaf spot/2septoria-tomato.jpg
+data/plantdoc/test/Tomato Septoria leaf spot/55830b60a7cf2.image.jpg
+data/plantdoc/test/Tomato Septoria leaf spot/6134794031202304.jpeg.jpg
+data/plantdoc/test/Tomato Septoria leaf spot/636227737977191231-septoria-leaf-spot-VT.jpg
+data/plantdoc/test/Tomato Septoria leaf spot/6447731_orig.jpg
+data/plantdoc/test/Tomato Septoria leaf spot/7-17-Photo3_Septoria-MARY.jpg
+data/plantdoc/test/Tomato Septoria leaf spot/RARZ4.jpg
+data/plantdoc/test/Tomato Septoria leaf spot/early-blight-septoria-ls-fig-3.jpg
+data/plantdoc/test/Tomato Septoria leaf spot/sept4disease-019.jpg
+data/plantdoc/test/Tomato leaf bacterial spot/07.17.18-Common_Tomato_Diseases_Canker-258x300.jpg
+data/plantdoc/test/Tomato leaf bacterial spot/tomato_V8.jpg
+data/plantdoc/test/Tomato leaf late blight/110822-206-Tomato-blight.jpg
+data/plantdoc/test/Tomato leaf late blight/18c.jpg
+data/plantdoc/test/Tomato leaf late blight/636368370164094909-late-blight-15-.jpg
+data/plantdoc/test/Tomato leaf late blight/70.jpg
+data/plantdoc/test/Tomato leaf late blight/E%29Tomato-late-blight-foliar.jpg
+data/plantdoc/test/Tomato leaf late blight/IMG_5808.jpg
+data/plantdoc/test/Tomato leaf late blight/LateBlt09_06.jpg
+data/plantdoc/test/Tomato leaf late blight/dsc_8148cs.jpg
+data/plantdoc/test/Tomato leaf late blight/image.jpg
+data/plantdoc/test/Tomato leaf late blight/late_blight_tomato_leaf_spore1x1200.jpg
+data/plantdoc/test/Tomato leaf mosaic virus/9511.img.jpg
+data/plantdoc/test/Tomato leaf mosaic virus/D%29AlfMov.jpg
+data/plantdoc/test/Tomato leaf mosaic virus/Tomato-Mosaic-1wdr2jx-300x225.jpg
+data/plantdoc/test/Tomato leaf mosaic virus/everystockphoto-21099455-l.jpg
+data/plantdoc/test/Tomato leaf mosaic virus/ill-tomato-of-tomato-mosaic-virus-DBE17N.jpg
+data/plantdoc/test/Tomato leaf mosaic virus/tmv-tomato-34.jpg
+data/plantdoc/test/Tomato leaf mosaic virus/tmv-tomato-9.jpg
+data/plantdoc/test/Tomato leaf mosaic virus/toma_TMV.jpg
+data/plantdoc/test/Tomato leaf mosaic virus/tomato_virus_04_zoom.jpg
+data/plantdoc/test/Tomato leaf/1684.jpg
+data/plantdoc/test/Tomato leaf/2013-08-20-06.jpg
+data/plantdoc/test/Tomato leaf/90e2c0.jpg
+data/plantdoc/test/Tomato leaf/DSCN1015.JPG.jpg
+data/plantdoc/test/Tomato leaf/IMG_1246.jpg
+data/plantdoc/test/Tomato leaf/Tomato59.JPG.jpg
+data/plantdoc/test/Tomato leaf/Tomato_leaf.jpg
+data/plantdoc/test/Tomato leaf/main-qimg-d9c2a93f60568485c989670d9bbf703b.jpg
+data/plantdoc/test/Tomato mold leaf/49%20Leafmold%20Bottom.jpg
+data/plantdoc/test/Tomato mold leaf/50%20Leafmold%20Top.jpg
+data/plantdoc/test/Tomato mold leaf/black_leaf_mold_in_zina_tina.jpg
+data/plantdoc/test/Tomato mold leaf/dscn6689.jpg
+data/plantdoc/test/Tomato mold leaf/fungus-univ-of-minnesoeta.jpg

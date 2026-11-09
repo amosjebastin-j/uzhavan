@@ -1,5 +1,7 @@
 package com.cropadvisor
 
+import kotlin.math.roundToInt
+
 import android.app.ActivityManager
 import android.content.Context
 import android.content.Intent
@@ -62,6 +64,11 @@ data class Scan(
         else -> "severe"
     }
     val uncertain: Boolean get() = noLeaf || otherCrop || confidence < AppState.CONF_THRESHOLD
+    /** Second crop with the same condition (e.g. potato early blight when the top answer is tomato early blight). */
+    val altCropLabel: String? get() = top3.getOrNull(1)?.takeIf { (l, p) ->
+        p >= 0.15f && l.substringBefore("___") != label.substringBefore("___") && !l.startsWith("Other___") &&
+            l.substringAfter("___").lowercase() == label.substringAfter("___").lowercase()
+    }?.first
 }
 
 class AppState private constructor(private val ctx: Context) {
@@ -72,8 +79,12 @@ class AppState private constructor(private val ctx: Context) {
 
     private val prefs = ctx.getSharedPreferences("app", Context.MODE_PRIVATE)
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main)
-    private val visionThread = Executors.newSingleThreadExecutor().asCoroutineDispatcher()
-    private val llmThread = Executors.newSingleThreadExecutor()
+    // ONE thread runs every ExecuTorch call — vision load / scan / benchmark / field test and Llama load / answers —
+    // strictly one job at a time. Both models share XNNPACK's native thread-pool, so they must never overlap, and a
+    // running answer is only ever stopped from this same thread (see Advisor.stop). No locks, no cross-thread races.
+    private val mlExec = Executors.newSingleThreadExecutor { r -> Thread(r, "uzhavan-ml") }
+    private val visionThread = mlExec.asCoroutineDispatcher()
+    private val llmThread = mlExec
 
     // ---- language ----
     var lang by mutableStateOf(prefs.getString("lang", "") ?: "")
@@ -118,10 +129,9 @@ class AppState private constructor(private val ctx: Context) {
     private fun resetTries(phone: String) =
         db.update(phone, android.content.ContentValues().apply { put("failed", 0); put("locked_until", 0L) })
 
-    fun register(phone: String, name: String, village: String, password: String, question: Int, answer: String) {
-        val u = User(phone, name.trim(), village.trim(), System.currentTimeMillis(), question >= 0)
-        db.insertUser(u, Db.hashSecret(password), question,
-            if (question >= 0) Db.hashSecret(Db.normAnswer(answer)) else "")
+    fun register(phone: String, name: String, village: String, password: String) {
+        val u = User(phone, name.trim(), village.trim(), System.currentTimeMillis())
+        db.insertUser(u, Db.hashSecret(password), -1, "")
         login(u)
     }
 
@@ -136,11 +146,17 @@ class AppState private constructor(private val ctx: Context) {
         login(a.user); return null
     }
 
-    fun checkAnswer(phone: String, answer: String): String? {
+    /**
+     * Forgot password (farmer-friendly, offline): the farmer confirms the name and village used at sign-up.
+     * Case, spaces and dots are ignored. 5 wrong tries → 30 s lock-out, like the password.
+     */
+    fun checkIdentity(phone: String, name: String, village: String): String? {
         val a = db.account(phone) ?: return t("no_account")
         lockLeft(a).let { if (it > 0) return t("locked").format(it) }
-        if (a.question < 0) return t("no_recovery")
-        if (!Db.verify(Db.normAnswer(answer), a.answer, phone)) return t("wrong_answer") + " " + failedTry(phone, a)
+        val norm = { x: String -> x.lowercase().replace(Regex("[^\\p{L}\\p{N}]+"), "") }
+        val okName = norm(name) == norm(a.user.name)
+        val okVillage = a.user.village.isBlank() || norm(village) == norm(a.user.village)
+        if (!okName || !okVillage) return t("wrong_identity") + " " + failedTry(phone, a)
         resetTries(phone); recoveryVerified = phone; return null
     }
 
@@ -165,16 +181,6 @@ class AppState private constructor(private val ctx: Context) {
         val a = db.account(u.phone) ?: return null
         if (!Db.verify(old, a.pass, u.phone)) return t("wrong_password")
         db.update(u.phone, android.content.ContentValues().apply { put("pass", Db.hashSecret(new)) })
-        return null
-    }
-
-    fun setRecovery(password: String, question: Int, answer: String): String? {
-        val u = user ?: return null
-        val a = db.account(u.phone) ?: return null
-        if (!Db.verify(password, a.pass, u.phone)) return t("wrong_password")
-        db.update(u.phone, android.content.ContentValues().apply {
-            put("question", question); put("answer", Db.hashSecret(Db.normAnswer(answer))) })
-        user = u.copy(hasRecovery = true)
         return null
     }
 
@@ -243,16 +249,26 @@ class AppState private constructor(private val ctx: Context) {
         migrateLegacy()
         prefs.getString("currentUser", null)?.let { findUser(it) }?.let { user = it }
         loadHistory()
+        // Start-up order matters (ExecuTorch resets its shared thread-pool whenever an LlmModule is created):
+        //   1. create the vision module (no inference yet)   2. create + load Llama
+        //   3. only now run the vision model for the first time, so both models use the same, final thread-pool.
+        // Everything runs on ONE thread, in this order, so it can never interleave.
         scope.launch {
             val t0 = System.currentTimeMillis()
-            vision = try { withContext(visionThread) { Vision(ctx) } } catch (e: Throwable) { null }
-            visionLoadMs = System.currentTimeMillis() - t0
+            val v = try { withContext(visionThread) { Vision(ctx) } } catch (e: Throwable) { Log.e("Uzhavan", "vision", e); null }
+            val a = withContext(visionThread) { Advisor(ctx) }
+            val llmMs = withContext(visionThread) { a.loadLlm() }
+            val t1 = System.currentTimeMillis()
+            val ok = v != null && withContext(visionThread) {
+                try { v.warmUp(); true } catch (e: Throwable) { Log.e("Uzhavan", "vision warm-up", e); false }
+            }
+            vision = if (ok) v else null
+            visionLoadMs = (System.currentTimeMillis() - t1) + (t1 - t0 - llmMs).coerceAtLeast(0)
             visionReady = true
-            val a = withContext(Dispatchers.IO) { Advisor(ctx) }
-            llmLoadMs = withContext(Dispatchers.IO) { a.loadLlm() }
+            llmLoadMs = llmMs
             advisor = a
             llmReady = a.llmReady
-            llmError = advisor?.llmError
+            llmError = a.llmError
             llmDone = true
         }
         tts = TextToSpeech(ctx) { }.apply {
@@ -274,7 +290,7 @@ class AppState private constructor(private val ctx: Context) {
             val started = System.currentTimeMillis()
             val r = try { withContext(visionThread) { v.analyse(bmp) } } catch (e: Throwable) {
                 analysing = false; scanningPhoto = null
-                Toast.makeText(ctx, "Could not read this photo. Please try again.", Toast.LENGTH_LONG).show()
+                Toast.makeText(ctx, t("photo_error"), Toast.LENGTH_LONG).show()
                 return@launch onError()
             }
             val scan = withContext(Dispatchers.IO) {
@@ -282,8 +298,8 @@ class AppState private constructor(private val ctx: Context) {
                 val img = File(historyDir, "$id.jpg")
                 val small = scaleDown(bmp, 900)
                 img.outputStream().use { small.compress(Bitmap.CompressFormat.JPEG, 88, it) }
-                Scan(id, r.label, r.confidence, r.severityPct, r.top3, System.currentTimeMillis(),
-                    img.absolutePath, r.inferenceMs, r.preprocessMs, r.leafPct)
+                Scan(id, r.label, sameDiseaseConfidence(r.top3, r.confidence), r.severityPct, r.top3,
+                    System.currentTimeMillis(), img.absolutePath, r.inferenceMs, r.preprocessMs, r.leafPct)
             }
             val owner = user
             if (owner != null) withContext(Dispatchers.IO) { db.insertScan(owner.phone, scan) }
@@ -299,32 +315,50 @@ class AppState private constructor(private val ctx: Context) {
 
     fun open(scan: Scan) {
         current = scan
+        clearVoice()
         requestAdvice()
     }
 
     /** (Re)generates the Llama explanation for the current scan in the current language. */
-    fun requestAdvice() {
+    /** Short technical reason when the AI answer could not be produced (shown small under the message). */
+    var adviceError by mutableStateOf<String?>(null); private set
+    /** Language the current AI answer is written in ("en" for Tamil users who asked for English). */
+    var adviceLang by mutableStateOf("en"); private set
+
+    fun requestAdvice() { requestAdvice(retry = true, genLang = lang) }
+    /** Tamil users: Llama 3.2 does not support Tamil, so they can ask for the AI explanation in English. */
+    fun requestAdviceInEnglish() { requestAdvice(retry = true, genLang = "en") }
+
+    private fun requestAdvice(retry: Boolean, genLang: String) {
         val scan = current ?: return
         val a = advisor
         val gen = ++adviceGen
         a?.stop()
-        advice = ""; adviceFailed = false; llmStats = null
-        if (scan.uncertain || !aiOn || lang == "ta" || a == null || !a.llmReady) {
+        advice = ""; adviceFailed = false; llmStats = null; adviceError = null; adviceLang = genLang
+        if (scan.uncertain || !aiOn || genLang == "ta" || a == null || !a.llmReady) {
             adviceRunning = false
             adviceFailed = aiOn && (a == null || !a.llmReady)
+            if (adviceFailed) adviceError = a?.llmError ?: "Llama model not loaded"
             return
         }
         adviceRunning = true
         val sevWord = Strings.t(scan.severityKey, "en")
-        val prompt = a.buildPrompt(scan.label, sevWord, scan.confidence, lang)
+        val prompt = a.buildPrompt(scan.label, sevWord, scan.confidence, genLang)
         llmThread.execute {
             if (gen != adviceGen) return@execute
             val sb = StringBuilder()
+            var refused = false
             a.generate(prompt,
                 onToken = { tok ->
                     if (gen == adviceGen) {
-                        sb.append(tok); val text = cleanAdvice(sb.toString())
-                        ui { if (gen == adviceGen) advice = text }
+                        if (!refused) {
+                            sb.append(tok)
+                            val text = cleanAdvice(Advisor.PREFILL + sb.toString())   // answer was pre-started with "1."
+                            if (Advisor.isRefusal(sb.toString())) {      // refusal → stop, fall back to approved guidance
+                                Log.w("UzhavanLLM", "refusal: $text"); refused = true; a.stop(); sb.setLength(0)
+                                ui { if (gen == adviceGen) advice = "" }
+                            } else ui { if (gen == adviceGen) advice = text }
+                        }
                     } else {
                         // answer no longer wanted (user left / new scan / field test). A stop() sent just before
                         // generate() started is lost, so stop again here, on Llama's own thread, every token.
@@ -332,12 +366,19 @@ class AppState private constructor(private val ctx: Context) {
                     }
                 },
                 onStats = { s -> ui { if (gen == adviceGen) llmStats = s } },
-                onFail = { ui { if (gen == adviceGen) adviceFailed = true } })
+                onFail = { msg -> ui { if (gen == adviceGen) { adviceFailed = true; adviceError = shortError(msg) } } })
             val empty = sb.isBlank()
+            if (empty && gen == adviceGen) Log.w("UzhavanLLM", "no usable answer (lang=$genLang, label=${scan.label}, retry=$retry)")
             ui {
                 if (gen == adviceGen) {
-                    adviceRunning = false
-                    if (empty) adviceFailed = true
+                    if (empty && retry && !refused) requestAdvice(retry = false, genLang = genLang)   // one silent retry
+                    else {
+                        adviceRunning = false
+                        if (empty) {
+                            adviceFailed = true
+                            if (adviceError == null) adviceError = if (refused) "model declined" else "model returned no text"
+                        }
+                    }
                 }
             }
         }
@@ -351,7 +392,14 @@ class AppState private constructor(private val ctx: Context) {
         if (speaking) { tts?.stop(); speaking = false }
     }
 
-    private fun cleanAdvice(raw: String) = raw.replace("**", "").replace("##", "").trimStart()
+    /** Keeps the useful part of a native error, e.g. "Max seq length exceeded", instead of the full runner log. */
+    private fun shortError(msg: String): String {
+        val key = Regex("E ([^\\[]{10,160})").find(msg)?.groupValues?.get(1)?.trim()
+        return (key ?: msg.substringBefore(" | nativeLog")).take(160)
+    }
+
+    private fun cleanAdvice(raw: String) = raw.replace("**", "").replace("##", "")
+        .replace(Regex("(?m)^\\s*[*-]\\s+"), "• ").replace(Regex("\n{3,}"), "\n\n").trimStart()
 
     fun allLabels(): List<String> = vision?.labels ?: emptyList()
 
@@ -375,6 +423,20 @@ class AppState private constructor(private val ctx: Context) {
     } catch (e: Exception) { null }
 
     // ---------------- history ----------------
+    /**
+     * Early blight, late blight, bacterial spot and "healthy" look the same — and are treated the same — on tomato,
+     * potato and pepper (same pathogen). When the top two answers are the same condition on different crops, the
+     * condition itself is certain: its confidence is the sum (e.g. 54 % tomato + 35 % potato early blight = 89 %).
+     */
+    private fun sameDiseaseConfidence(top: List<Pair<String, Float>>, conf: Float): Float {
+        if (top.size < 2) return conf
+        val (l1, p1) = top[0]; val (l2, p2) = top[1]
+        val cond = { l: String -> l.substringAfter("___").lowercase().replace('_', ' ').trim() }
+        val sameCondition = l1.substringBefore("___") != l2.substringBefore("___") && cond(l1) == cond(l2) &&
+            !l1.startsWith("Other___") && !l2.startsWith("Other___")
+        return if (sameCondition) (p1 + p2).coerceAtMost(0.99f) else conf
+    }
+
     fun delete(scan: Scan) {
         history.remove(scan)
         File(scan.imagePath).delete()
@@ -414,6 +476,74 @@ class AppState private constructor(private val ctx: Context) {
         engine.speak(text.take(TextToSpeech.getMaxSpeechInputLength() - 1), TextToSpeech.QUEUE_FLUSH, null, "advice")
     }
 
+    // ---------------- voice questions (speech → answer → read aloud) ----------------
+    var voiceQuestion by mutableStateOf<String?>(null); private set
+    var voiceAnswer by mutableStateOf(""); private set
+    var voiceRunning by mutableStateOf(false); private set
+    var voiceFromAi by mutableStateOf(false); private set
+
+    /** BCP-47 tag for Android's speech recogniser in the app language. */
+    fun speechTag() = when (lang) { "ta" -> "ta-IN"; "hi" -> "hi-IN"; else -> "en-IN" }
+
+    /**
+     * Answers a spoken question about the current scan. Safety rules:
+     *  - questions about medicine / spraying → the verified treatment text, word for word (never AI-made)
+     *  - Tamil (not supported by Llama 3.2) → the matching verified Tamil section
+     *  - English / Hindi → Llama answers in 2–4 sentences from the verified care plan; falls back to verified text
+     * The answer is then read aloud in the farmer's language.
+     */
+    fun askByVoice(question: String) {
+        val scan = current ?: return
+        val g = guidance(scan.label) ?: return
+        voiceQuestion = question; voiceAnswer = ""; voiceFromAi = false
+        val topic = Advisor.topicOf(question)
+        val verified = when (topic) {
+            "treatment" -> g.treatment ?: g.actions.joinToString(". ")
+            "prevention" -> g.prevention
+            "cause" -> g.cause
+            "symptoms" -> g.symptoms
+            else -> g.actions.joinToString(". ")
+        }
+        if (topic == "severity") {          // answered exactly from this scan's own measurement
+            val ans = t("sev_answer").format(t(scan.severityKey), scan.severityPct.roundToInt()) +
+                if (scan.severityKey == "severe") " " + t("urgent") else ""
+            voiceAnswer = ans; speak(ans, toggle = false); return
+        }
+        val a = advisor
+        if (topic == "treatment" || lang == "ta" || scan.uncertain || !aiOn || a == null || !a.llmReady || adviceRunning) {
+            voiceAnswer = verified; speak(verified, toggle = false); return
+        }
+        voiceRunning = true
+        val prompt = a.buildQuestionPrompt(scan.label, question, lang)
+        val myScan = scan.id
+        llmThread.execute {
+            val sb = StringBuilder()
+            var refused = false
+            a.generate(prompt,
+                onToken = { tok ->
+                    if (current?.id != myScan) a.stop()
+                    else if (!refused) {
+                        sb.append(tok)
+                        if (Advisor.isRefusal(sb.toString())) { refused = true; a.stop(); sb.setLength(0) }
+                        else { val text = cleanAdvice(sb.toString()); ui { voiceAnswer = text; voiceFromAi = true } }
+                    }
+                },
+                onStats = { },
+                onFail = { msg -> Log.w("UzhavanLLM", "voice answer failed: $msg") }, short = true)
+            val text = cleanAdvice(sb.toString())
+            ui {
+                voiceRunning = false
+                if (current?.id == myScan) {
+                    val answer = if (text.isBlank()) verified else text
+                    voiceAnswer = answer; voiceFromAi = text.isNotBlank()
+                    speak(answer, toggle = false)
+                }
+            }
+        }
+    }
+
+    fun clearVoice() { voiceQuestion = null; voiceAnswer = ""; voiceRunning = false }
+
     fun shareIntent(scan: Scan, text: String): Intent {
         val uri: Uri = FileProvider.getUriForFile(ctx, "com.cropadvisor.fileprovider", File(scan.imagePath))
         return Intent.createChooser(Intent(Intent.ACTION_SEND).apply {
@@ -443,6 +573,10 @@ class AppState private constructor(private val ctx: Context) {
     var evalProgress by mutableStateOf(""); private set
     var evalSummary by mutableStateOf<List<String>?>(null); private set
     var evalSaved by mutableStateOf(false); private set
+    data class EvalStats(val n: Int, val ok: Int, val cropOk: Int, val supN: Int, val supOk: Int,
+                         val conf: Int, val confOk: Int, val avgInfMs: Long, val avgPreMs: Long,
+                         val perClass: List<Triple<String, Int, Int>>)      // label, correct, total
+    var evalStats by mutableStateOf<EvalStats?>(null); private set
     // Android 16 can hide adb-pushed files in Android/data from the app, so /data/local/tmp/eval is a fallback
     // (same place the Llama model is read from).
     fun evalDir(): File? = listOfNotNull(ctx.getExternalFilesDir("eval"), File("/data/local/tmp/eval"))
@@ -454,7 +588,7 @@ class AppState private constructor(private val ctx: Context) {
         val root = evalDir() ?: return
         val outDir = ctx.getExternalFilesDir(null) ?: ctx.filesDir
         stopAdvice()
-        evalSaved = false
+        evalSaved = false; evalStats = null
         evalRunning = true; evalSummary = null; evalProgress = ""
         scope.launch {
             val lines = try { withContext(visionThread) {
@@ -488,10 +622,16 @@ class AppState private constructor(private val ctx: Context) {
                         "${"%.1f".format(r.leafPct)},${r.inferenceMs},${r.preprocessMs}\n")
                 }
                 val n = per.values.sumOf { it[1] }.coerceAtLeast(1)
+                val sup = per.filterKeys { !it.startsWith("Other___") }.values
+                val supN = sup.sumOf { it[1] }; val supOk = sup.sumOf { it[0] }
+                val stats = EvalStats(n, ok, cropOk, supN, supOk, conf, confOk, inf / n, pre / n,
+                    per.map { (l, c) -> Triple(l, c[0], c[1]) })
+                ui { evalStats = stats }
                 val pct = { a: Int, b: Int -> "%.1f%%".format(100.0 * a / b.coerceAtLeast(1)) }
                 val out = mutableListOf(
                     "Photos tested: $n",
                     "Disease correct (top-1): ${pct(ok, n)}  ($ok/$n)",
+                    "Disease correct, 5 supported crops: ${pct(supOk, supN)}  ($supOk/$supN)",
                     "Crop correct: ${pct(cropOk, n)}",
                     "Confident (≥60%): ${pct(conf, n)} of photos — of these ${pct(confOk, conf)} correct",
                     "Avg time per photo: ${inf / n} ms model (3 views) + ${pre / n} ms preprocess",
@@ -526,8 +666,24 @@ class AppState private constructor(private val ctx: Context) {
         val soc = if (Build.VERSION.SDK_INT >= 31) "${Build.SOC_MANUFACTURER} ${Build.SOC_MODEL}" else Build.HARDWARE
         val llmSize = advisor?.modelFile?.length()?.let { "%.0f MB".format(it / 1e6) } ?: "—"
         val visSize = File(ctx.filesDir, "crop_mnv3.pte").takeIf { it.exists() }?.length()?.let { "%.0f MB".format(it / 1e6) } ?: "—"
+        // why the app last closed — lets a crash be diagnosed from a screenshot, without a laptop
+        val lastExit = if (Build.VERSION.SDK_INT >= 30) try {
+            am.getHistoricalProcessExitReasons(ctx.packageName, 0, 1).firstOrNull()?.let { e ->
+                val why = when (e.reason) {
+                    android.app.ApplicationExitInfo.REASON_CRASH_NATIVE -> "native crash"
+                    android.app.ApplicationExitInfo.REASON_CRASH -> "app crash"
+                    android.app.ApplicationExitInfo.REASON_ANR -> "not responding"
+                    android.app.ApplicationExitInfo.REASON_LOW_MEMORY -> "low memory"
+                    android.app.ApplicationExitInfo.REASON_USER_REQUESTED -> "closed by user"
+                    android.app.ApplicationExitInfo.REASON_PACKAGE_UPDATED -> "app updated"
+                    else -> "normal (${e.reason})"
+                }
+                why + " · " + java.text.SimpleDateFormat("d MMM HH:mm", java.util.Locale.US).format(java.util.Date(e.timestamp))
+            } ?: "—"
+        } catch (e: Throwable) { "—" } else "—"
         return listOf(
             "Device" to "${Build.MANUFACTURER} ${Build.MODEL}",
+            "Last app exit" to lastExit,
             "SoC" to soc,
             "CPU cores" to "${Runtime.getRuntime().availableProcessors()} (Arm ${Build.SUPPORTED_ABIS.firstOrNull()})",
             "Android" to "${Build.VERSION.RELEASE} (API ${Build.VERSION.SDK_INT})",
@@ -549,8 +705,7 @@ class AppState private constructor(private val ctx: Context) {
         const val MAX_TRIES = 5                 // wrong passwords / answers before a short lock-out
         const val LOCK_MS = 30_000L
         const val MIN_SCAN_ANIM_MS = 1100L
-        const val MIN_PASSWORD = 6
-        const val QUESTIONS = 4                 // security questions q0..q3 in Strings
+        const val MIN_PASSWORD = 4              // a 4-digit PIN is fine for farmers
 
         @Volatile private var instance: AppState? = null
         /** One engine for the whole app process, so models are not reloaded when the screen is recreated. */

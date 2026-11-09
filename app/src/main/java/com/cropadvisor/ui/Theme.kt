@@ -21,7 +21,7 @@ import androidx.compose.ui.unit.sp
 import com.cropadvisor.R
 
 /**
- * "Emerald & Gold" premium theme.
+ * "Jade & Champagne" premium theme — deep jade green with soft champagne-gold accents.
  * Reading a colour inside a composable makes it follow light / dark mode automatically.
  */
 object Palette {
@@ -30,29 +30,29 @@ object Palette {
     private fun c(light: Long, night: Long) = if (dark) Color(night) else Color(light)
 
     // ---- fixed brand colours (used on photos / gradients, same in both modes) ----
-    val ForestFixed = Color(0xFF0B3D2E)
-    val ForestDeep = Color(0xFF06140F)
-    val Gold = Color(0xFFD4AF37)
-    val GoldLight = Color(0xFFEBD27A)
-    val GoldDeep = Color(0xFF8A6D1F)
-    val OnGold = Color(0xFF221A04)
-    val MintSoftFixed = Color(0xFFDDEFE5)
-    val MintFixed = Color(0xFF5CC08E)
+    val ForestFixed = Color(0xFF0A4A3F)
+    val ForestDeep = Color(0xFF04201B)
+    val Gold = Color(0xFFC8A660)
+    val GoldLight = Color(0xFFE6CF9A)
+    val GoldDeep = Color(0xFF8C7136)
+    val OnGold = Color(0xFF1E1708)
+    val MintSoftFixed = Color(0xFFD8EEE7)
+    val MintFixed = Color(0xFF3FBF9A)
 
     // ---- adaptive ----
-    val Forest get() = c(0xFF0B3D2E, 0xFFD9B856)        // primary: emerald (light) / gold (dark)
-    val OnForest get() = c(0xFFFFFFFF, 0xFF1D1604)
-    val Leaf get() = c(0xFF17694D, 0xFF7FD3A8)          // secondary green text / accents
-    val Mint get() = c(0xFF3FAF7A, 0xFF5CC08E)
-    val MintSoft get() = c(0xFFE3F1E9, 0xFF16261F)
-    val Cream get() = c(0xFFF7F5EF, 0xFF080D0B)         // page background
-    val Card get() = c(0xFFFFFFFF, 0xFF111915)
-    val CardAlt get() = c(0xFFF0EDE3, 0xFF18221D)
-    val Ink get() = c(0xFF141C18, 0xFFECEFEA)
-    val InkSoft get() = c(0xFF5E6862, 0xFF9AA59F)
-    val Line get() = c(0xFFE7E2D4, 0xFF222D27)
-    val GoldText get() = c(0xFF9A7A1C, 0xFFE4C76B)
-    val GoldSoft get() = c(0xFFF8F0D8, 0xFF2A2310)
+    val Forest get() = c(0xFF0A4A3F, 0xFF6FD3B5)        // primary: deep jade (light) / light jade (dark)
+    val OnForest get() = c(0xFFFFFFFF, 0xFF03211B)
+    val Leaf get() = c(0xFF0F7A62, 0xFF7CDCC0)          // secondary green text / accents
+    val Mint get() = c(0xFF23A77F, 0xFF3FBF9A)
+    val MintSoft get() = c(0xFFE2F2EC, 0xFF0F2A24)
+    val Cream get() = c(0xFFF4F7F5, 0xFF060E0C)         // page background
+    val Card get() = c(0xFFFFFFFF, 0xFF0E1A17)
+    val CardAlt get() = c(0xFFEBF1EE, 0xFF142420)
+    val Ink get() = c(0xFF10201C, 0xFFE8F0ED)
+    val InkSoft get() = c(0xFF5A6B66, 0xFF94A8A2)
+    val Line get() = c(0xFFDDE6E2, 0xFF1E2E2A)
+    val GoldText get() = c(0xFF8C6E2A, 0xFFE2C88E)
+    val GoldSoft get() = c(0xFFF6EFDF, 0xFF262013)
     val Amber get() = c(0xFFC9861A, 0xFFF0B54D)
     val AmberSoft get() = c(0xFFFBF1DD, 0xFF2D2410)
     val Terracotta get() = c(0xFFC0492F, 0xFFEE7A60)
@@ -60,10 +60,10 @@ object Palette {
     val Sky get() = c(0xFF2F6F99, 0xFF83BFE4)
     val SkySoft get() = c(0xFFE3EEF6, 0xFF13263A)
 
-    val hero get() = if (dark) Brush.linearGradient(listOf(Color(0xFF040A07), Color(0xFF0A2219), Color(0xFF113526)))
-                     else Brush.linearGradient(listOf(Color(0xFF062A1F), Color(0xFF0B3D2E), Color(0xFF155E45)))
-    val goldBrush = Brush.linearGradient(listOf(Color(0xFFE9CC6E), Color(0xFFD4AF37), Color(0xFFB8922B)))
-    val scrim = Brush.verticalGradient(listOf(Color(0x55000000), Color.Transparent, Color(0xE606140F)))
+    val hero get() = if (dark) Brush.linearGradient(listOf(Color(0xFF020B09), Color(0xFF08201B), Color(0xFF0E3A31)))
+                     else Brush.linearGradient(listOf(Color(0xFF032A23), Color(0xFF0A4A3F), Color(0xFF146B5A)))
+    val goldBrush = Brush.linearGradient(listOf(Color(0xFFEAD7A6), Color(0xFFC8A660), Color(0xFFA88A47)))
+    val scrim = Brush.verticalGradient(listOf(Color(0x55000000), Color.Transparent, Color(0xE604201B)))
 }
 
 /** Colour for a severity key: none / mild / moderate / severe. */

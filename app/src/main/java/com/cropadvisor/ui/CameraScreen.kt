@@ -64,6 +64,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleOwner
 import com.cropadvisor.AppState
+import androidx.compose.ui.layout.onSizeChanged
 
 @Composable
 fun CameraScreen(state: AppState, onBack: () -> Unit, onCaptured: (Bitmap) -> Unit) {
@@ -109,12 +110,14 @@ fun CameraScreen(state: AppState, onBack: () -> Unit, onCaptured: (Bitmap) -> Un
     var camera by remember { mutableStateOf<Camera?>(null) }
     var torch by remember { mutableStateOf(false) }
     var busy by remember { mutableStateOf(false) }
+    var viewSize by remember { mutableStateOf(androidx.compose.ui.unit.IntSize.Zero) }
 
     DisposableEffect(Unit) {
         onDispose { runCatching { ProcessCameraProvider.getInstance(ctx).get().unbindAll() } }
     }
 
-    Box(Modifier.fillMaxSize().background(Color.Black)) {
+    Box(Modifier.fillMaxSize().background(Color.Black)
+        .onSizeChanged { viewSize = it }) {
         AndroidView(
             modifier = Modifier.fillMaxSize(),
             factory = { c ->
@@ -133,9 +136,9 @@ fun CameraScreen(state: AppState, onBack: () -> Unit, onCaptured: (Bitmap) -> Un
 
         // dimmed surroundings + leaf frame with corner brackets
         Canvas(Modifier.fillMaxSize()) {
-            val side = size.width * 0.82f
+            val side = size.width * FRAME_W
             val left = (size.width - side) / 2
-            val top = size.height * 0.42f - side / 2
+            val top = size.height * FRAME_Y - side / 2
             val dim = Color.Black.copy(alpha = 0.45f)
             drawRect(dim, Offset.Zero, Size(size.width, top))
             drawRect(dim, Offset(0f, top + side), Size(size.width, size.height - top - side))
@@ -181,7 +184,8 @@ fun CameraScreen(state: AppState, onBack: () -> Unit, onCaptured: (Bitmap) -> Un
                                         image.close()
                                         val bmp = if (rot == 0) raw else Bitmap.createBitmap(raw, 0, 0, raw.width,
                                             raw.height, Matrix().apply { postRotate(rot.toFloat()) }, true)
-                                        onCaptured(AppState.scaleDown(bmp, 1280))
+                                        onCaptured(AppState.scaleDown(
+                                            cropToFrame(bmp, viewSize.width.toFloat(), viewSize.height.toFloat()), 1280))
                                     }
                                     override fun onError(exception: ImageCaptureException) { busy = false }
                                 })
@@ -192,6 +196,26 @@ fun CameraScreen(state: AppState, onBack: () -> Unit, onCaptured: (Bitmap) -> Un
             }
         }
     }
+}
+
+private const val FRAME_W = 0.82f      // gold frame: 82 % of the screen width…
+private const val FRAME_Y = 0.42f      // …centred at 42 % of the screen height
+
+/**
+ * Keeps only what the farmer framed: maps the on-screen gold square (plus an 8 % margin) back onto the captured photo.
+ * The preview uses FILL_CENTER, i.e. the photo is scaled to cover the screen and centred.
+ */
+private fun cropToFrame(bmp: Bitmap, vw: Float, vh: Float): Bitmap {
+    if (vw <= 0f || vh <= 0f) return bmp
+    val s = maxOf(vw / bmp.width, vh / bmp.height)
+    val offX = (bmp.width * s - vw) / 2; val offY = (bmp.height * s - vh) / 2
+    val side = vw * FRAME_W; val margin = side * 0.08f
+    val left = (vw - side) / 2 - margin; val top = vh * FRAME_Y - side / 2 - margin
+    val x0 = ((left + offX) / s).toInt().coerceIn(0, bmp.width - 1)
+    val y0 = ((top + offY) / s).toInt().coerceIn(0, bmp.height - 1)
+    val size = ((side + 2 * margin) / s).toInt()
+    val w = minOf(size, bmp.width - x0); val h = minOf(size, bmp.height - y0)
+    return if (w < 64 || h < 64) bmp else Bitmap.createBitmap(bmp, x0, y0, w, h)
 }
 
 @Composable

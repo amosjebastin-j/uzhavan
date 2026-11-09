@@ -224,7 +224,7 @@ fun LabeledText(label: String, text: String) {
 @Composable
 fun Modifier.premiumCard(radius: Dp = 24.dp, bg: Color = Palette.Card): Modifier {
     val shape = RoundedCornerShape(radius)
-    val shadowColor = if (Palette.dark) Color.Black else Color(0xFF0B3D2E)
+    val shadowColor = if (Palette.dark) Color.Black else Color(0xFF0A4A3F)
     return this.shadow(if (Palette.dark) 0.dp else 10.dp, shape, ambientColor = shadowColor.copy(alpha = 0.06f),
         spotColor = shadowColor.copy(alpha = 0.10f))
         .clip(shape).background(bg).border(1.dp, Palette.Line.copy(alpha = if (Palette.dark) 1f else 0.7f), shape)

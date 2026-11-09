@@ -13,9 +13,26 @@ import kotlin.math.exp
 
 /**
  * ExecuTorch's XNNPACK thread-pool is shared by all models in the process; running the vision model and Llama
- * at the same time crashes natively (SIGSEGV). Every ExecuTorch call takes this lock.
+ * at the same time crashes natively (SIGSEGV). Every ExecuTorch call goes through this lock.
+ * A scan has priority: while it waits, it keeps asking Llama to stop ([preempt]) until the runtime is free.
  */
-val ET_LOCK = Any()
+object EtLock {
+    private val lock = java.util.concurrent.locks.ReentrantLock()
+    @Volatile var preempt: (() -> Unit)? = null
+
+    fun <T> run(block: () -> T): T {
+        lock.lock()
+        try { return block() } finally { lock.unlock() }
+    }
+
+    fun <T> runFirst(block: () -> T): T {
+        val t0 = SystemClock.elapsedRealtime()
+        while (!lock.tryLock(250, java.util.concurrent.TimeUnit.MILLISECONDS)) preempt?.invoke()
+        val waited = SystemClock.elapsedRealtime() - t0
+        if (waited > 300) android.util.Log.w("UzhavanVision", "waited $waited ms for Llama to release the runtime")
+        try { return block() } finally { lock.unlock() }
+    }
+}
 
 /** Vision lane: MobileNetV3 (ExecuTorch + XNNPACK on Arm CPU) + colour-based severity estimate. */
 class Vision(ctx: Context) {
@@ -34,12 +51,22 @@ class Vision(ctx: Context) {
     private val module: Module
 
     init {
+        // Only creates the native module. The program/XNNPACK runtime is built lazily on the first forward(),
+        // which must happen AFTER Llama's LlmModule has been created (see warmUp / AppState start-up order).
         val pte = copyAsset(ctx, "crop_mnv3.pte")
         module = Module.load(pte.absolutePath)
         val arr = JSONArray(ctx.assets.open("labels.json").bufferedReader().readText())
         labels = List(arr.length()) { arr.getString(it) }
-        // warm-up run so the first real photo is not slower than the rest
-        synchronized(ET_LOCK) { module.forward(EValue.from(Tensor.fromBlob(FloatArray(3 * SIZE * SIZE), SHAPE))) }
+    }
+
+    /**
+     * First run: builds the XNNPACK runtime and makes the first real photo as fast as the rest.
+     * ROOT-CAUSE NOTE: creating an ExecuTorch LlmModule resets the process-wide XNNPACK thread-pool. A model whose
+     * runtime was built before that reset keeps a pointer to the destroyed pool → random native crashes or endless
+     * hangs on later scans. So this is called only after Llama has been created and loaded.
+     */
+    fun warmUp() {
+        EtLock.run { module.forward(EValue.from(Tensor.fromBlob(FloatArray(3 * SIZE * SIZE), SHAPE))) }
     }
 
     fun analyse(src: Bitmap): Result {
@@ -50,7 +77,7 @@ class Vision(ctx: Context) {
         val mirror = Bitmap.createBitmap(crop, 0, 0, SIZE, SIZE, android.graphics.Matrix().apply { preScale(-1f, 1f) }, false)
         val inputs = listOf(crop, whole, mirror).map { toTensor(it) }
         val probs = FloatArray(labels.size)
-        val (t1, t2) = synchronized(ET_LOCK) {
+        val (t1, t2) = EtLock.runFirst {
             val s = SystemClock.elapsedRealtime()
             for (inp in inputs) {
                 val p = softmax(module.forward(EValue.from(inp))[0].toTensor().dataAsFloatArray)
@@ -70,7 +97,7 @@ class Vision(ctx: Context) {
     /** Runs the model n times on a fixed input; returns per-run latencies in ms. */
     fun benchmark(n: Int): List<Double> {
         val input = Tensor.fromBlob(FloatArray(3 * SIZE * SIZE) { (it % 255) / 255f }, SHAPE)
-        return synchronized(ET_LOCK) {
+        return EtLock.run {
             List(n) {
                 val t = System.nanoTime()
                 module.forward(EValue.from(input))

@@ -6,6 +6,20 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.speech.RecognizerIntent
+import android.widget.Toast
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.rounded.Mic
+import androidx.compose.material.icons.rounded.Edit
+import androidx.compose.material.icons.rounded.Send
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -89,14 +103,14 @@ fun ResultScreen(state: AppState, onBack: () -> Unit, onRetake: () -> Unit) {
             Column(Modifier.align(Alignment.BottomStart).padding(22.dp)) {
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     val (typeText, typeIcon) = when {
-                        scan.uncertain -> "?" to Icons.Rounded.HelpOutline
+                        scan.uncertain -> state.t("unsure_pill") to Icons.Rounded.HelpOutline
                         healthy -> state.t("healthy") to Icons.Rounded.CheckCircle
                         isPest -> state.t("pest") to Icons.Rounded.BugReport
                         else -> state.t("disease") to Icons.Rounded.Coronavirus
                     }
                     Pill(typeText, accent.copy(alpha = 0.92f), Color.White, typeIcon)
                     if (!scan.label.startsWith("Other___"))
-                        Pill("${cropEmoji(scan.label.substringBefore("___"))} ${state.cropName(scan.label)}",
+                        Pill(state.cropName(scan.label) + (scan.altCropLabel?.let { " / " + state.cropName(it) } ?: ""),
                             Color.White.copy(alpha = 0.2f), Color.White)
                 }
                 Spacer(Modifier.height(10.dp))
@@ -183,6 +197,7 @@ fun ResultScreen(state: AppState, onBack: () -> Unit, onRetake: () -> Unit) {
                     if (!healthy) {
                         Spacer(Modifier.height(14.dp))
                         Box(Modifier.enterUp(2)) { AiCard(state) }
+                        Box(Modifier.enterUp(3)) { VoiceCard(state) }
                     }
                     // ---------- what is happening ----------
                     Spacer(Modifier.height(14.dp))
@@ -239,9 +254,24 @@ private fun AiCard(state: AppState) {
         Pill(state.t("ai_badge"), Palette.GoldSoft, Palette.GoldText, Icons.Rounded.Verified)
         Spacer(Modifier.height(12.dp))
         when {
-            state.lang == "ta" -> Text(state.t("ai_tamil"), color = Palette.InkSoft, style = MaterialTheme.typography.bodyMedium)
-            state.adviceFailed && state.advice.isBlank() ->
+            // Tamil: Llama 3.2 does not support Tamil → verified Tamil guidance + optional AI explanation in English
+            state.lang == "ta" && state.advice.isBlank() && !state.adviceRunning && !state.adviceFailed -> Column {
+                Text(state.t("ai_tamil"), color = Palette.InkSoft, style = MaterialTheme.typography.bodyMedium)
+                if (state.llmReady) Text(state.t("ai_explain_en"), color = Palette.Leaf, fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 6.dp).clip(RoundedCornerShape(8.dp))
+                        .clickable { state.requestAdviceInEnglish() }.padding(vertical = 8.dp, horizontal = 4.dp))
+            }
+            state.adviceFailed && state.advice.isBlank() -> Column {
                 Text(state.t("ai_unavailable"), color = Palette.InkSoft, style = MaterialTheme.typography.bodyMedium)
+                if (state.llmReady) Text("↻  " + state.t("try_again"), color = Palette.Leaf, fontWeight = FontWeight.SemiBold,
+                    modifier = Modifier.padding(top = 6.dp).clip(RoundedCornerShape(8.dp))
+                        .clickable { if (state.lang == "ta") state.requestAdviceInEnglish() else state.requestAdvice() }
+                        .padding(vertical = 8.dp, horizontal = 4.dp))
+                state.adviceError?.let {
+                    Text("Details: $it", fontSize = 11.sp, color = Palette.InkSoft.copy(alpha = 0.8f),
+                        modifier = Modifier.padding(top = 4.dp))
+                }
+            }
             state.advice.isBlank() && state.adviceRunning -> Row(verticalAlignment = Alignment.CenterVertically) {
                 CircularProgressIndicator(Modifier.size(18.dp), color = Palette.Leaf, strokeWidth = 2.dp)
                 Spacer(Modifier.width(10.dp))
@@ -265,10 +295,87 @@ private fun AiCard(state: AppState) {
     }
 }
 
+/**
+ * Voice questions for farmers who prefer speaking to reading: the phone's speech recogniser (offline when the
+ * language pack is installed) turns speech into text in English, Tamil or Hindi; the answer comes from the verified
+ * guidance (or Llama, grounded in it, for English / Hindi) and is read aloud.
+ */
+@Composable
+private fun VoiceCard(state: AppState) {
+    val ctx = LocalContext.current
+    val launcher = rememberLauncherForActivityResult(ActivityResultContracts.StartActivityForResult()) { res ->
+        val q = res.data?.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS)?.firstOrNull()
+        if (!q.isNullOrBlank()) state.askByVoice(q)
+    }
+    fun listen() {
+        val i = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE, state.speechTag())
+            putExtra(RecognizerIntent.EXTRA_LANGUAGE_PREFERENCE, state.speechTag())
+            putExtra(RecognizerIntent.EXTRA_PROMPT, state.t("voice_prompt"))
+        }
+        try { launcher.launch(i) } catch (e: ActivityNotFoundException) {
+            Toast.makeText(ctx, state.t("voice_unavailable"), Toast.LENGTH_LONG).show()
+        }
+    }
+    SectionCard(state.t("voice_title"), Icons.Rounded.Mic, accent = Palette.Leaf) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            Box(Modifier.size(60.dp).clip(CircleShape).background(Palette.goldBrush).clickable { listen() },
+                contentAlignment = Alignment.Center) {
+                Icon(Icons.Rounded.Mic, state.t("voice_title"), tint = Palette.OnGold, modifier = Modifier.size(28.dp))
+            }
+            Spacer(Modifier.width(14.dp))
+            Column(Modifier.weight(1f)) {
+                Text(state.t("voice_tap"), style = MaterialTheme.typography.titleMedium, color = Palette.Ink)
+                Text(state.t("voice_sub"), style = MaterialTheme.typography.bodySmall, color = Palette.InkSoft)
+            }
+        }
+        // typed question: works on every phone, even without a speech recogniser
+        var typed by remember { mutableStateOf("") }
+        Spacer(Modifier.height(12.dp))
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            AuthField(typed, { typed = it.take(200) }, state.t("type_question"), Icons.Rounded.Edit,
+                modifier = Modifier.weight(1f))
+            Spacer(Modifier.width(8.dp))
+            Box(Modifier.size(52.dp).clip(CircleShape).background(Palette.Forest)
+                .clickable { if (typed.isNotBlank()) { state.askByVoice(typed.trim()); typed = "" } },
+                contentAlignment = Alignment.Center) {
+                Icon(Icons.Rounded.Send, state.t("type_question"), tint = Palette.OnForest, modifier = Modifier.size(22.dp))
+            }
+        }
+        state.voiceQuestion?.let { q ->
+            Spacer(Modifier.height(14.dp))
+            Text("“$q”", style = MaterialTheme.typography.bodyLarge, color = Palette.Ink, fontStyle = FontStyle.Italic,
+                modifier = Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Palette.CardAlt).padding(12.dp))
+            Spacer(Modifier.height(8.dp))
+            if (state.voiceAnswer.isBlank()) Row(verticalAlignment = Alignment.CenterVertically) {
+                CircularProgressIndicator(Modifier.size(18.dp), color = Palette.Leaf, strokeWidth = 2.dp)
+                Spacer(Modifier.width(10.dp))
+                Text(state.t("ai_thinking"), color = Palette.InkSoft)
+            } else Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Palette.MintSoft).padding(12.dp)) {
+                Text(state.voiceAnswer, style = MaterialTheme.typography.bodyLarge, color = Palette.Ink)
+                Spacer(Modifier.height(8.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(state.t(if (state.voiceFromAi) "voice_src_ai" else "voice_src_verified"), fontSize = 11.sp,
+                        color = Palette.InkSoft, modifier = Modifier.weight(1f))
+                    if (!state.voiceRunning) Row(Modifier.clip(RoundedCornerShape(8.dp)).clickable { state.speak(state.voiceAnswer) }
+                        .padding(6.dp), verticalAlignment = Alignment.CenterVertically) {
+                        Icon(Icons.Rounded.VolumeUp, null, tint = Palette.Leaf, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(4.dp))
+                        Text(state.t("listen_again"), color = Palette.Leaf, fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
+                    }
+                }
+            }
+        }
+    }
+}
+
 @Composable
 private fun AltRow(state: AppState, label: String, p: Float) {
     Row(Modifier.fillMaxWidth().padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
-        Text("${cropEmoji(label.substringBefore("___"))}  ${state.conditionName(label)}",
+        CropBadge(label.substringBefore("___"), 20.dp)
+        Spacer(Modifier.width(10.dp))
+        Text(state.conditionName(label),
             modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge, color = Palette.Ink)
         Box(Modifier.width(70.dp).height(6.dp).clip(RoundedCornerShape(3.dp)).background(Palette.Line)) {
             Box(Modifier.fillMaxWidth(p.coerceIn(0.02f, 1f)).height(6.dp).background(Palette.Sky))
@@ -304,7 +411,7 @@ private fun UnsureBlock(state: AppState, onRetake: () -> Unit) {
 }
 
 private fun shareText(state: AppState, label: String, steps: String, conf: Float, sev: String) = buildString {
-    append("🌱 ${state.t("app")} — ${state.cropName(label)}\n")
+    append("${state.t("app")} — ${state.cropName(label)}\n")
     append("${state.conditionName(label)} · ${state.t("confidence")} ${(conf * 100).toInt()}% · ${state.t("severity")} $sev\n\n")
     append(steps)
     append("\n\n(Offline AI report — please confirm with your agriculture officer / KVK)")

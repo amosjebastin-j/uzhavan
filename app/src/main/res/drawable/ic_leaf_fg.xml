@@ -6,7 +6,7 @@
     android:viewportWidth="108" android:viewportHeight="108">
     <group android:scaleX="1.25" android:scaleY="1.25" android:pivotX="54" android:pivotY="54">
     <!-- viewfinder corners -->
-    <path android:fillColor="#00000000" android:strokeColor="#D4AF37" android:strokeWidth="2.4"
+    <path android:fillColor="#00000000" android:strokeColor="#C8A660" android:strokeWidth="2.4"
         android:strokeLineCap="round" android:strokeLineJoin="round"
         android:pathData="M31.56,39.48L31.56,31.56L39.48,31.56M68.52,31.56L76.44,31.56L76.44,39.48M76.44,68.52L76.44,76.44L68.52,76.44M39.48,76.44L31.56,76.44L31.56,68.52" />
     <!-- leaf -->
@@ -16,7 +16,7 @@
     <path android:fillColor="#A8E6C1"
         android:pathData="M40.8,68.52C38.16,52.68 52.68,38.16 69.84,39.48L42.78,66.54Z" />
     <!-- midrib, veins, stem -->
-    <path android:fillColor="#00000000" android:strokeColor="#EBD27A" android:strokeWidth="1.7"
+    <path android:fillColor="#00000000" android:strokeColor="#E6CF9A" android:strokeWidth="1.7"
         android:strokeLineCap="round"
         android:pathData="M42.78,66.54L67.2,42.12M51.33,57.99L50.4,51.46M51.33,57.99L57.86,58.92M57.43,51.89L56.71,46.67M57.43,51.89L62.65,52.61M40.8,68.52Q38.82,72.48 36.18,73.8" />
     </group>

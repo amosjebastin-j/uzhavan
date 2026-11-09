@@ -95,6 +95,8 @@ import androidx.compose.ui.unit.sp
 import com.cropadvisor.AppState
 import com.cropadvisor.Scan
 import com.cropadvisor.Strings
+import com.cropadvisor.Vision
+import androidx.compose.ui.text.style.TextAlign
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.text.SimpleDateFormat
@@ -116,8 +118,20 @@ fun safeDecode(ctx: Context, uri: Uri): Bitmap? = try { decodeUri(ctx, uri) } ca
     null
 }
 
-fun cropEmoji(key: String) = when (key) {
-    "Tomato" -> "🍅"; "Potato" -> "🥔"; "Pepper,_bell" -> "🫑"; "Corn_(maize)" -> "🌽"; else -> "🌾"
+/** Professional crop marker: a coloured tile with the crop's initial (no emoji anywhere in the app). */
+fun cropColor(key: String) = when (key) {
+    "Tomato" -> Color(0xFFC8423B); "Potato" -> Color(0xFF9A6B35); "Pepper,_bell" -> Color(0xFF2F8F5B)
+    "Corn_(maize)" -> Color(0xFFC9971C); "Rice" -> Color(0xFF3B8C8C); else -> Color(0xFF6B7C74)
+}
+
+@Composable
+fun CropBadge(key: String, size: androidx.compose.ui.unit.Dp = 22.dp) {
+    val c = cropColor(key)
+    Box(Modifier.size(size).clip(RoundedCornerShape(size * 0.3f)).background(c.copy(alpha = 0.14f))
+        .border(1.dp, c.copy(alpha = 0.35f), RoundedCornerShape(size * 0.3f)), contentAlignment = Alignment.Center) {
+        Text(when (key) { "Pepper,_bell" -> "C"; "Corn_(maize)" -> "M"; "Other" -> "•"; else -> key.take(1) },
+            color = c, fontWeight = FontWeight.Bold, fontSize = (size.value * 0.48f).sp)
+    }
 }
 
 // =====================================================================================
@@ -190,7 +204,7 @@ fun HomeScreen(state: AppState, onScan: () -> Unit, onPicked: (Bitmap) -> Unit,
                 UzhavanLogo(44.dp)
                 Spacer(Modifier.width(12.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("${state.t("greet")}, ${user?.firstName ?: ""} 👋", color = Color.White,
+                    Text("${state.t("greet")}, ${user?.firstName ?: ""}", color = Color.White,
                         fontWeight = FontWeight.Bold, fontSize = 18.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(SimpleDateFormat("EEEE, d MMMM", localeFor(state.lang)).format(Date()),
                         color = Palette.MintSoftFixed.copy(alpha = 0.85f), fontSize = 13.sp)
@@ -361,12 +375,16 @@ fun ScanRow(state: AppState, scan: Scan, onOpen: (Scan) -> Unit, onDelete: ((Sca
         Column(Modifier.weight(1f)) {
             Text(state.conditionName(scan.label), style = MaterialTheme.typography.titleMedium, color = Palette.Ink,
                 maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Text("${cropEmoji(scan.label.substringBefore("___"))} ${state.cropName(scan.label)} · " +
-                SimpleDateFormat("d MMM, h:mm a", localeFor(state.lang)).format(Date(scan.time)),
-                fontSize = 12.sp, color = Palette.InkSoft)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                CropBadge(scan.label.substringBefore("___"), 16.dp)
+                Spacer(Modifier.width(6.dp))
+                Text("${state.cropName(scan.label)} · " +
+                    SimpleDateFormat("d MMM, h:mm a", localeFor(state.lang)).format(Date(scan.time)),
+                    fontSize = 12.sp, color = Palette.InkSoft)
+            }
             Spacer(Modifier.height(5.dp))
             Pill(when {
-                scan.uncertain -> "?"
+                scan.uncertain -> state.t("unsure_pill")
                 scan.severityKey == "none" -> state.t("healthy")
                 else -> state.t(scan.severityKey)
             }, sevColor.copy(alpha = 0.15f), sevColor)
@@ -382,13 +400,28 @@ fun ScanRow(state: AppState, scan: Scan, onOpen: (Scan) -> Unit, onDelete: ((Sca
 // =====================================================================================
 @Composable
 fun HistoryScreen(state: AppState, onOpen: (Scan) -> Unit) {
+    var toDelete by remember { mutableStateOf<Scan?>(null) }
+    toDelete?.let { s ->
+        AlertDialog(
+            onDismissRequest = { toDelete = null },
+            title = { Text(state.t("delete_scan")) },
+            text = { Text(state.conditionName(s.label), color = Palette.InkSoft) },
+            confirmButton = {
+                TextButton({ state.delete(s); toDelete = null }) {
+                    Text(state.t("delete"), color = Palette.Terracotta, fontWeight = FontWeight.Bold)
+                }
+            },
+            dismissButton = { TextButton({ toDelete = null }) { Text(state.t("cancel"), color = Palette.Ink) } },
+            containerColor = Palette.Card, titleContentColor = Palette.Ink,
+        )
+    }
     LazyColumn(Modifier.fillMaxSize().statusBarsPadding(), contentPadding = PaddingValues(20.dp)) {
         item {
             Text(state.t("history"), style = MaterialTheme.typography.headlineMedium, color = Palette.Ink)
             Spacer(Modifier.height(12.dp))
             if (state.history.isEmpty()) EmptyNote(state.t("no_history"))
         }
-        items(state.history.toList(), key = { it.id }) { ScanRow(state, it, onOpen, onDelete = { s -> state.delete(s) }) }
+        items(state.history.toList(), key = { it.id }) { ScanRow(state, it, onOpen, onDelete = { s -> toDelete = s }) }
     }
 }
 
@@ -443,15 +476,45 @@ fun DeviceScreen(state: AppState) {
         SectionCard("Field-photo accuracy test", Icons.Rounded.PhotoLibrary) {
             Text("Runs every photo in the eval folder through the model on this phone and scores it.",
                 color = Palette.InkSoft, fontSize = 13.sp)
-            Spacer(Modifier.height(8.dp))
-            state.evalSummary?.forEach { line ->
-                Text(line, color = Palette.Ink, fontSize = 13.sp,
-                    fontWeight = if (line.startsWith("Disease") || line.startsWith("Crop")) FontWeight.SemiBold else FontWeight.Normal)
-            }
-            if (state.evalSaved) {
-                Text("Saved: eval_results.csv, eval_summary.txt", color = Palette.Leaf, fontSize = 12.sp)
+            Spacer(Modifier.height(12.dp))
+            val es = state.evalStats
+            if (es != null) {
+                val p = { a: Int, b: Int -> "%.1f%%".format(100.0 * a / maxOf(1, b)) }
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    MetricTile("5 crops", p(es.supOk, es.supN), Modifier.weight(1f))
+                    MetricTile("Crop correct", p(es.cropOk, es.n), Modifier.weight(1f))
+                }
                 Spacer(Modifier.height(10.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    MetricTile("When sure (≥60%)", p(es.confOk, es.conf), Modifier.weight(1f))
+                    MetricTile("Per photo", "${es.avgInfMs + es.avgPreMs} ms", Modifier.weight(1f))
+                }
+                Spacer(Modifier.height(10.dp))
+                Text("${es.n} real farm photos · ${es.supOk}/${es.supN} diseases right on tomato, potato, pepper, maize · " +
+                    "answered confidently on ${p(es.conf, es.n)} of photos", color = Palette.InkSoft, fontSize = 12.sp)
+                Spacer(Modifier.height(12.dp))
+                es.perClass.sortedByDescending { it.second.toFloat() / maxOf(1, it.third) }.forEach { (label, ok, tot) ->
+                    val f = ok.toFloat() / maxOf(1, tot)
+                    Row(Modifier.fillMaxWidth().padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
+                        CropBadge(label.substringBefore("___"), 18.dp)
+                        Spacer(Modifier.width(8.dp))
+                        Text(Vision.pretty(label).substringAfter("— "),
+                            modifier = Modifier.weight(1f), fontSize = 13.sp, color = Palette.Ink, maxLines = 1,
+                            overflow = TextOverflow.Ellipsis)
+                        Box(Modifier.width(80.dp).height(6.dp).clip(RoundedCornerShape(3.dp)).background(Palette.Line)) {
+                            Box(Modifier.fillMaxWidth(f.coerceIn(0.02f, 1f)).height(6.dp)
+                                .background(if (f >= 0.7f) Palette.Mint else if (f >= 0.4f) Palette.Amber else Palette.Terracotta))
+                        }
+                        Text("$ok/$tot", fontSize = 12.sp, color = Palette.InkSoft, textAlign = TextAlign.End,
+                            modifier = Modifier.width(44.dp))
+                    }
+                }
+            } else state.evalSummary?.forEach { line -> Text(line, color = Palette.Ink, fontSize = 13.sp) }
+            if (state.evalSaved) {
+                Spacer(Modifier.height(6.dp))
+                Text("Saved: eval_results.csv, eval_summary.txt", color = Palette.Leaf, fontSize = 12.sp)
             }
+            Spacer(Modifier.height(10.dp))
             BigButton(if (state.evalRunning) "Testing… ${state.evalProgress}" else "Run field-photo test",
                 Icons.Rounded.PhotoLibrary, { state.runEval() }, Modifier.fillMaxWidth(), enabled = !state.evalRunning)
         }
@@ -491,7 +554,6 @@ fun ProfileScreen(state: AppState, onAbout: () -> Unit) {
     if (langOpen) LanguageSheet(state) { langOpen = false }
     when (dialog) {
         "pw" -> ChangePasswordDialog(state) { dialog = null }
-        "question" -> SecurityQuestionDialog(state) { dialog = null }
     }
     confirm?.let { what ->
         AlertDialog(
@@ -572,8 +634,6 @@ fun ProfileScreen(state: AppState, onAbout: () -> Unit) {
 
             SettingsGroup(state.t("security")) {
                 SettingRow(Icons.Rounded.Lock, state.t("change_pw"), null) { dialog = "pw" }
-                SettingRow(Icons.Rounded.Shield, state.t("security_title"),
-                    state.t(if (user.hasRecovery) "recovery_ok" else "recovery_missing")) { dialog = "question" }
             }
 
             SettingsGroup(state.t("profile")) {
@@ -658,7 +718,7 @@ fun AboutScreen(state: AppState, onBack: () -> Unit) {
                 val conds = labels.filter { it.startsWith("${crop}___") }
                 Column(Modifier.fillMaxWidth().padding(vertical = 6.dp).premiumCard(22.dp).padding(16.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(cropEmoji(crop), fontSize = 30.sp)
+                        CropBadge(crop, 40.dp)
                         Spacer(Modifier.width(12.dp))
                         Text(Strings.cropName("${crop}___x", state.lang), style = MaterialTheme.typography.titleLarge,
                             color = Palette.Ink, modifier = Modifier.weight(1f))

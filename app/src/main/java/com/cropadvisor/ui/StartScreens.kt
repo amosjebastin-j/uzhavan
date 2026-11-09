@@ -219,7 +219,8 @@ fun AnalysingScreen(state: AppState) {
         Spacer(Modifier.height(20.dp))
         listOf("step_detect", "step_severity", "step_advice").forEachIndexed { i, k ->
             Row(Modifier.enterUp(2 + i * 2).padding(vertical = 5.dp), verticalAlignment = Alignment.CenterVertically) {
-                CircularProgressIndicator(Modifier.size(16.dp), color = Palette.Gold, strokeWidth = 2.dp)
+                CircularProgressIndicator(Modifier.size(20.dp), color = Palette.Gold, strokeWidth = 2.5.dp,
+                    trackColor = Palette.Gold.copy(alpha = 0.18f))
                 Spacer(Modifier.width(10.dp))
                 Text(state.t(k), color = Palette.MintSoftFixed, style = MaterialTheme.typography.bodyLarge)
             }
@@ -230,8 +231,13 @@ fun AnalysingScreen(state: AppState) {
 // =====================================================================================
 //  Sign in / create account / reset password  (all offline, on-device database)
 // =====================================================================================
-private enum class Auth { PHONE, SIGNIN, CREATE, SECURITY, RECOVER, NEWPW, NORECOVERY }
+private enum class Auth { PHONE, SIGNIN, CREATE, RECOVER, NEWPW }
 
+/**
+ * Sign in / create account / reset password — designed for farmers:
+ * mobile number → password (or create: name, village, password) · forgot password → confirm name + village.
+ * Everything is stored only on this phone (SQLite, salted + hashed password).
+ */
 @Composable
 fun LoginScreen(state: AppState) {
     var step by remember { mutableStateOf(Auth.PHONE) }
@@ -240,17 +246,11 @@ fun LoginScreen(state: AppState) {
     var village by remember { mutableStateOf("") }
     var pw by remember { mutableStateOf("") }
     var pw2 by remember { mutableStateOf("") }
-    var question by remember { mutableIntStateOf(0) }
-    var answer by remember { mutableStateOf("") }
     var error by remember { mutableStateOf<String?>(null) }
     var shake by remember { mutableIntStateOf(0) }
     var confirmRemove by remember { mutableStateOf(false) }
 
-    fun go(s: Auth) {
-        error = null; pw = ""; pw2 = ""
-        if (s == Auth.PHONE || s == Auth.SIGNIN || s == Auth.RECOVER) answer = ""
-        step = s
-    }
+    fun go(s: Auth) { error = null; pw = ""; pw2 = ""; step = s }
     fun fail(msg: String) { error = msg; shake++ }
     fun pwProblem(): String? = when {
         pw.length < AppState.MIN_PASSWORD -> state.t("pw_short")
@@ -275,10 +275,10 @@ fun LoginScreen(state: AppState) {
 
     Column(Modifier.fillMaxSize().background(Palette.Cream).verticalScroll(rememberScrollState()).imePadding()) {
         // ---------- hero ----------
-        Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(bottomStart = 40.dp, bottomEnd = 40.dp)).background(Palette.hero)) {
-            UzhavanLogo(240.dp, Modifier.align(Alignment.TopEnd).offset(x = 70.dp, y = (-20).dp).alpha(0.08f), badge = false)
-            Column(Modifier.statusBarsPadding().padding(start = 28.dp, end = 28.dp, top = 24.dp, bottom = 32.dp)) {
-                UzhavanLogo(68.dp, animated = true)
+        Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(bottomStart = 36.dp, bottomEnd = 36.dp)).background(Palette.hero)) {
+            UzhavanLogo(240.dp, Modifier.align(Alignment.TopEnd).offset(x = 70.dp, y = (-20).dp).alpha(0.07f), badge = false)
+            Column(Modifier.statusBarsPadding().padding(start = 28.dp, end = 28.dp, top = 28.dp, bottom = 34.dp)) {
+                UzhavanLogo(64.dp, animated = true)
                 Spacer(Modifier.height(20.dp))
                 Text(state.t("login_title"), color = Color.White, style = MaterialTheme.typography.displaySmall,
                     modifier = Modifier.enterUp(1))
@@ -293,35 +293,32 @@ fun LoginScreen(state: AppState) {
             targetState = step, label = "auth",
             transitionSpec = {
                 val fwd = targetState.ordinal > initialState.ordinal
-                (slideInHorizontally(tween(380)) { w -> if (fwd) w / 3 else -w / 3 } + fadeIn(tween(380))) togetherWith
-                    (slideOutHorizontally(tween(300)) { w -> if (fwd) -w / 3 else w / 3 } + fadeOut(tween(250)))
+                (slideInHorizontally(tween(360)) { w -> if (fwd) w / 3 else -w / 3 } + fadeIn(tween(360))) togetherWith
+                    (slideOutHorizontally(tween(280)) { w -> if (fwd) -w / 3 else w / 3 } + fadeOut(tween(220)))
             },
         ) { s ->
             Column(Modifier.fillMaxWidth().padding(24.dp).shakeOn(shake)) {
                 when (s) {
                     Auth.PHONE -> {
-                        StepTitle(state.t("mobile"), null)
+                        StepTitle(state.t("mobile"), state.t("mobile_sub"))
                         AuthField(phone, { v -> phone = v.filter(Char::isDigit).take(10); error = null },
                             state.t("mobile"), Icons.Rounded.Phone, keyboard = KeyboardType.Phone, prefix = "+91  ",
                             isError = error != null)
                     }
                     Auth.SIGNIN -> {
                         val u = state.findUser(phone)
-                        StepTitle("${state.t("welcome_back")}, ${u?.firstName ?: ""} 👋", "+91 $phone")
+                        StepTitle("${state.t("welcome_back")}, ${u?.firstName ?: ""}", "+91 $phone")
                         AuthField(pw, { pw = it; error = null }, state.t("password_enter"), Icons.Rounded.Lock,
                             password = true, isError = error != null)
                         Text(state.t("forgot"), color = Palette.Leaf, fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.align(Alignment.End).clip(RoundedCornerShape(8.dp))
-                                .clickable { go(if (state.recoveryQuestion(phone) >= 0) Auth.RECOVER else Auth.NORECOVERY) }
-                                .padding(8.dp))
+                                .clickable { name = ""; village = ""; go(Auth.RECOVER) }.padding(8.dp))
                     }
                     Auth.CREATE -> {
-                        Pill(state.t("step_of").format(1), Palette.GoldSoft, Palette.GoldText)
-                        Spacer(Modifier.height(12.dp))
                         StepTitle(state.t("create_account"), "+91 $phone")
                         AuthField(name, { name = it.take(40); error = null }, state.t("name"), Icons.Rounded.Person)
                         Spacer(Modifier.height(10.dp))
-                        AuthField(village, { village = it.take(40) }, state.t("village"), Icons.Rounded.Place)
+                        AuthField(village, { village = it.take(40); error = null }, state.t("village"), Icons.Rounded.Place)
                         Spacer(Modifier.height(10.dp))
                         AuthField(pw, { pw = it; error = null }, state.t("password_new"), Icons.Rounded.Lock,
                             password = true, hint = state.t("pw_hint"))
@@ -330,27 +327,13 @@ fun LoginScreen(state: AppState) {
                             password = true, isError = error != null && pw != pw2)
                         StrengthBar(pw)
                     }
-                    Auth.SECURITY -> {
-                        Pill(state.t("step_of").format(2), Palette.GoldSoft, Palette.GoldText)
-                        Spacer(Modifier.height(12.dp))
-                        StepTitle(state.t("security_title"), state.t("security_sub"))
-                        QuestionPicker(state, question) { question = it }
-                        Spacer(Modifier.height(12.dp))
-                        AuthField(answer, { answer = it.take(40); error = null }, state.t("your_answer"),
-                            Icons.Rounded.VpnKey, isError = error != null)
-                    }
                     Auth.RECOVER -> {
                         StepTitle(state.t("recover_title"), state.t("recover_sub"))
-                        val q = state.recoveryQuestion(phone)
-                        Row(Modifier.fillMaxWidth().premiumCard(18.dp, Palette.GoldSoft).padding(16.dp),
-                            verticalAlignment = Alignment.CenterVertically) {
-                            Icon(Icons.Rounded.Shield, null, tint = Palette.GoldText)
-                            Spacer(Modifier.width(12.dp))
-                            Text(state.t("q$q"), color = Palette.Ink, style = MaterialTheme.typography.titleMedium)
-                        }
-                        Spacer(Modifier.height(14.dp))
-                        AuthField(answer, { answer = it.take(40); error = null }, state.t("your_answer"),
-                            Icons.Rounded.VpnKey, isError = error != null)
+                        AuthField(name, { name = it.take(40); error = null }, state.t("name"), Icons.Rounded.Person,
+                            isError = error != null)
+                        Spacer(Modifier.height(10.dp))
+                        AuthField(village, { village = it.take(40); error = null }, state.t("village"), Icons.Rounded.Place,
+                            isError = error != null)
                     }
                     Auth.NEWPW -> {
                         StepTitle(state.t("new_pw_title"), "+91 $phone")
@@ -360,14 +343,6 @@ fun LoginScreen(state: AppState) {
                         AuthField(pw2, { pw2 = it; error = null }, state.t("password_confirm"), Icons.Rounded.Lock,
                             password = true, isError = error != null)
                         StrengthBar(pw)
-                    }
-                    Auth.NORECOVERY -> {
-                        StepTitle(state.t("recover_title"), null)
-                        Row(Modifier.fillMaxWidth().premiumCard(18.dp, Palette.SkySoft).padding(16.dp)) {
-                            Icon(Icons.Rounded.HelpOutline, null, tint = Palette.Sky)
-                            Spacer(Modifier.width(12.dp))
-                            Text(state.t("no_recovery"), color = Palette.Ink, style = MaterialTheme.typography.bodyLarge)
-                        }
                     }
                 }
 
@@ -381,16 +356,11 @@ fun LoginScreen(state: AppState) {
                 val (label, icon) = when (s) {
                     Auth.PHONE -> state.t("next") to Icons.Rounded.ArrowForward
                     Auth.SIGNIN -> state.t("sign_in") to Icons.Rounded.Check
-                    Auth.CREATE -> state.t("next") to Icons.Rounded.ArrowForward
-                    Auth.SECURITY -> state.t("create") to Icons.Rounded.Check
+                    Auth.CREATE -> state.t("create") to Icons.Rounded.Check
                     Auth.RECOVER -> state.t("verify") to Icons.Rounded.Shield
                     Auth.NEWPW -> state.t("save_signin") to Icons.Rounded.Check
-                    Auth.NORECOVERY -> state.t("remove_acc") to Icons.Rounded.DeleteForever
                 }
-                BigButton(label, icon, modifier = Modifier.fillMaxWidth(),
-                    bg = if (s == Auth.NORECOVERY) Palette.Terracotta else Palette.Forest,
-                    fg = if (s == Auth.NORECOVERY) Color.White else Palette.OnGold,
-                    brush = if (s == Auth.NORECOVERY) null else Palette.goldBrush,
+                BigButton(label, icon, modifier = Modifier.fillMaxWidth(), fg = Palette.OnGold, brush = Palette.goldBrush,
                     onClick = {
                         when (s) {
                             Auth.PHONE ->
@@ -401,16 +371,12 @@ fun LoginScreen(state: AppState) {
                                 else state.signIn(phone, pw)?.let { fail(it); pw = "" }
                             Auth.CREATE -> when {
                                 name.isBlank() -> fail(state.t("need_name"))
-                                else -> pwProblem()?.let { fail(it) } ?: run { error = null; step = Auth.SECURITY }
+                                else -> pwProblem()?.let { fail(it) } ?: run { state.register(phone, name, village, pw) }
                             }
-                            Auth.SECURITY ->
-                                if (answer.trim().length < 2) fail(state.t("need_answer"))
-                                else state.register(phone, name, village, pw, question, answer)
                             Auth.RECOVER ->
-                                if (answer.trim().length < 2) fail(state.t("need_answer"))
-                                else state.checkAnswer(phone, answer)?.let { fail(it) } ?: go(Auth.NEWPW)
+                                if (name.isBlank()) fail(state.t("need_name"))
+                                else state.checkIdentity(phone, name, village)?.let { fail(it) } ?: go(Auth.NEWPW)
                             Auth.NEWPW -> pwProblem()?.let { fail(it) } ?: run { state.resetPassword(phone, pw) }
-                            Auth.NORECOVERY -> confirmRemove = true
                         }
                     },
                 )
@@ -426,8 +392,7 @@ fun LoginScreen(state: AppState) {
                     Spacer(Modifier.height(6.dp))
                     Row(Modifier.clip(RoundedCornerShape(8.dp)).clickable {
                         when (s) {
-                            Auth.SECURITY -> { error = null; step = Auth.CREATE }       // keep typed passwords
-                            Auth.RECOVER, Auth.NORECOVERY, Auth.NEWPW -> go(Auth.SIGNIN)
+                            Auth.RECOVER, Auth.NEWPW -> go(Auth.SIGNIN)
                             else -> go(Auth.PHONE)
                         }
                     }.padding(8.dp), verticalAlignment = Alignment.CenterVertically) {
@@ -456,30 +421,6 @@ private fun StepTitle(title: String, sub: String?) {
     Text(title, style = MaterialTheme.typography.headlineSmall, color = Palette.Ink)
     if (sub != null) Text(sub, color = Palette.InkSoft, style = MaterialTheme.typography.bodyMedium)
     Spacer(Modifier.height(18.dp))
-}
-
-/** Security-question choice (also used in Profile → Account security). */
-@Composable
-fun QuestionPicker(state: AppState, selected: Int, onSelect: (Int) -> Unit) {
-    Column(Modifier.fillMaxWidth().premiumCard(18.dp)) {
-        repeat(AppState.QUESTIONS) { i ->
-            val on = i == selected
-            Row(
-                Modifier.fillMaxWidth().background(if (on) Palette.GoldSoft else Color.Transparent)
-                    .clickable { onSelect(i) }.padding(horizontal = 14.dp, vertical = 12.dp),
-                verticalAlignment = Alignment.CenterVertically,
-            ) {
-                Box(Modifier.size(22.dp).clip(CircleShape)
-                    .border(2.dp, if (on) Palette.GoldText else Palette.Line, CircleShape)
-                    .background(if (on) Palette.GoldText else Color.Transparent),
-                    contentAlignment = Alignment.Center) {
-                    if (on) Icon(Icons.Rounded.Check, null, tint = Palette.Card, modifier = Modifier.size(14.dp))
-                }
-                Spacer(Modifier.width(12.dp))
-                Text(state.t("q$i"), color = Palette.Ink, style = MaterialTheme.typography.bodyMedium)
-            }
-        }
-    }
 }
 
 /** Four-segment password strength bar. */
