@@ -1,0 +1,18 @@
+Photos tested: 153
+Disease correct (top-1): 86.3%  (132/153)
+Disease correct, 5 supported crops: 59.6%  (28/47)
+Crop correct: 93.5%
+Confident (≥60%): 85.6% of photos — of these 93.1% correct
+Avg time per photo: 25 ms model (3 views) + 4 ms preprocess
+
+ 98.1%  (104/106)  Other — Leaf
+ 44.4%  (4/9)  Pepper — Bacterial spot
+100.0%  (8/8)  Pepper — Healthy
+ 50.0%  (3/6)  Potato — Early blight
+ 42.9%  (3/7)  Potato — Late blight
+ 42.9%  (3/7)  Tomato — Bacterial spot
+  0.0%  (0/1)  Tomato — Early blight
+  0.0%  (0/1)  Tomato — Leaf Mold
+100.0%  (1/1)  Tomato — Septoria leaf spot
+100.0%  (1/1)  Tomato — Tomato mosaic virus
+ 83.3%  (5/6)  Tomato — Tomato Yellow Leaf Curl Virus
