@@ -7,16 +7,23 @@ import androidx.compose.material3.Typography
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
+import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.LineHeightStyle
+import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.cropadvisor.R
 
@@ -83,22 +90,72 @@ val Poppins = FontFamily(
 )
 val SerifDisplay = FontFamily(Font(R.font.dmserif_regular, FontWeight.Normal))
 
+/**
+ * Line heights are relative (em), so any Text that only overrides fontSize keeps proportional spacing —
+ * a fixed sp line height made small captions float with big gaps. Glyphs are centred in their line box,
+ * which keeps text optically centred next to icons on every phone.
+ */
+private val centred = LineHeightStyle(LineHeightStyle.Alignment.Center, LineHeightStyle.Trim.None)
+private fun st(family: FontFamily, size: Int, lh: Float, weight: FontWeight = FontWeight.Normal, ls: Float = 0f) =
+    TextStyle(fontFamily = family, fontWeight = weight, fontSize = size.sp, lineHeight = lh.em,
+        letterSpacing = ls.sp, lineHeightStyle = centred)
+
 private val type = Typography(
-    displaySmall = TextStyle(fontFamily = SerifDisplay, fontSize = 34.sp, lineHeight = 40.sp, letterSpacing = (-0.3).sp),
-    headlineMedium = TextStyle(fontFamily = SerifDisplay, fontSize = 28.sp, lineHeight = 34.sp),
-    headlineSmall = TextStyle(fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 21.sp, lineHeight = 28.sp),
-    titleLarge = TextStyle(fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 18.sp, lineHeight = 25.sp),
-    titleMedium = TextStyle(fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 15.sp, lineHeight = 22.sp),
-    bodyLarge = TextStyle(fontFamily = Poppins, fontSize = 15.sp, lineHeight = 23.sp),
-    bodyMedium = TextStyle(fontFamily = Poppins, fontSize = 13.sp, lineHeight = 20.sp),
-    bodySmall = TextStyle(fontFamily = Poppins, fontSize = 12.sp, lineHeight = 17.sp),
-    labelLarge = TextStyle(fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 15.sp),
-    labelMedium = TextStyle(fontFamily = Poppins, fontWeight = FontWeight.SemiBold, fontSize = 11.sp, letterSpacing = 0.8.sp),
-    labelSmall = TextStyle(fontFamily = Poppins, fontWeight = FontWeight.Medium, fontSize = 11.sp),
+    displaySmall = st(SerifDisplay, 34, 1.18f, ls = -0.3f),
+    headlineMedium = st(SerifDisplay, 28, 1.22f),
+    headlineSmall = st(Poppins, 21, 1.33f, FontWeight.SemiBold),
+    titleLarge = st(Poppins, 18, 1.38f, FontWeight.SemiBold),
+    titleMedium = st(Poppins, 15, 1.45f, FontWeight.Medium),
+    bodyLarge = st(Poppins, 15, 1.5f),
+    bodyMedium = st(Poppins, 13, 1.5f),
+    bodySmall = st(Poppins, 12, 1.45f),
+    labelLarge = st(Poppins, 15, 1.3f, FontWeight.SemiBold),
+    labelMedium = st(Poppins, 11, 1.35f, FontWeight.SemiBold, ls = 0.8f),
+    labelSmall = st(Poppins, 11, 1.35f, FontWeight.Medium),
 )
 
+/**
+ * Tamil and Hindi: the Latin fonts have no glyphs for these scripts, so the system Tamil / Devanagari font is used.
+ * Those scripts need taller lines (vowel signs above and below) and Tamil words are long, so large headings are
+ * made a little smaller and every line a little taller; no letter-spacing (it breaks joined letters).
+ */
+private fun typeFor(lang: String): Typography {
+    if (lang != "ta" && lang != "hi") return type
+    val big = if (lang == "ta") 0.82f else 0.92f
+    val small = if (lang == "ta") 0.94f else 1f
+    fun TextStyle.adapt(k: Float, extra: Float) =
+        copy(fontSize = fontSize * k, lineHeight = (lineHeight.value + extra).em, letterSpacing = 0.sp)
+    return Typography(
+        displaySmall = type.displaySmall.adapt(big, 0.2f), headlineMedium = type.headlineMedium.adapt(big, 0.2f),
+        headlineSmall = type.headlineSmall.adapt(big, 0.15f), titleLarge = type.titleLarge.adapt(small, 0.12f),
+        titleMedium = type.titleMedium.adapt(small, 0.1f), bodyLarge = type.bodyLarge.adapt(small, 0.1f),
+        bodyMedium = type.bodyMedium.adapt(small, 0.1f), bodySmall = type.bodySmall.adapt(small, 0.1f),
+        labelLarge = type.labelLarge.adapt(small, 0.1f), labelMedium = type.labelMedium.adapt(small, 0.1f),
+        labelSmall = type.labelSmall.adapt(small, 0.1f),
+    )
+}
+
+/** Narrowest layout width the screens are designed for; smaller or zoomed-in phones are scaled to fit it. */
+private const val MIN_WIDTH_DP = 360f
+/** System font size is respected up to this factor ("Large"); beyond it text would break the layout. */
+private const val MAX_FONT_SCALE = 1.2f
+
 @Composable
-fun AppTheme(dark: Boolean, content: @Composable () -> Unit) {
+fun AppTheme(dark: Boolean, lang: String = "en", content: @Composable () -> Unit) {
+    val sys = LocalDensity.current
+    val conf = LocalConfiguration.current
+    val w = conf.screenWidthDp.toFloat()
+    val density = remember(sys.density, sys.fontScale, w) {
+        Density(
+            density = if (w >= 1f && w < MIN_WIDTH_DP) sys.density * w / MIN_WIDTH_DP else sys.density,
+            fontScale = sys.fontScale.coerceIn(0.85f, MAX_FONT_SCALE),
+        )
+    }
+    CompositionLocalProvider(LocalDensity provides density) { ThemedContent(dark, lang, content) }
+}
+
+@Composable
+private fun ThemedContent(dark: Boolean, lang: String, content: @Composable () -> Unit) {
     if (Palette.dark != dark) Palette.dark = dark
     val scheme = if (dark) darkColorScheme(
         primary = Palette.Forest, onPrimary = Palette.OnForest, background = Palette.Cream,
@@ -112,7 +169,7 @@ fun AppTheme(dark: Boolean, content: @Composable () -> Unit) {
         error = Palette.Terracotta, surfaceContainer = Palette.Card, surfaceContainerHigh = Palette.Card,
     )
     MaterialTheme(
-        colorScheme = scheme, typography = type,
+        colorScheme = scheme, typography = remember(lang) { typeFor(lang) },
         shapes = Shapes(small = RoundedCornerShape(12.dp), medium = RoundedCornerShape(20.dp), large = RoundedCornerShape(28.dp)),
         content = content,
     )

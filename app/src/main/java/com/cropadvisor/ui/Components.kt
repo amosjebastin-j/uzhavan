@@ -52,10 +52,50 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.material3.LocalTextStyle
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
+import androidx.compose.ui.unit.isSpecified
+import androidx.compose.ui.unit.isUnspecified
 import androidx.compose.ui.unit.sp
+
+/**
+ * One-line label that shrinks its font (down to [minScale]) instead of wrapping mid-word or being cut off —
+ * used for short labels in fixed-width places (tabs, chips, segmented buttons, gauges).
+ */
+@Composable
+fun AutoText(
+    text: String, modifier: Modifier = Modifier, style: TextStyle = LocalTextStyle.current,
+    color: Color = Color.Unspecified, fontSize: TextUnit = TextUnit.Unspecified, fontWeight: FontWeight? = null,
+    textAlign: TextAlign? = null, minScale: Float = 0.65f,
+) {
+    var s = style
+    if (fontSize.isSpecified) s = s.copy(fontSize = fontSize)
+    if (fontWeight != null) s = s.copy(fontWeight = fontWeight)
+    if (textAlign != null) s = s.copy(textAlign = textAlign)
+    if (s.fontSize.isUnspecified) s = s.copy(fontSize = 14.sp)
+    val base = s
+    var scale by remember(text, base) { mutableFloatStateOf(1f) }
+    var ready by remember(text, base) { mutableStateOf(false) }
+    Text(
+        text, modifier.drawWithContent { if (ready) drawContent() }, color = color,
+        style = base.copy(fontSize = base.fontSize * scale), maxLines = 1, softWrap = false,
+        onTextLayout = { r ->
+            if (r.didOverflowWidth && scale > minScale) scale = maxOf(minScale, scale * 0.9f) else ready = true
+        },
+    )
+}
 
 @Composable
 fun Pill(text: String, bg: Color, fg: Color, icon: ImageVector? = null, modifier: Modifier = Modifier) {
@@ -64,7 +104,7 @@ fun Pill(text: String, bg: Color, fg: Color, icon: ImageVector? = null, modifier
         verticalAlignment = Alignment.CenterVertically,
     ) {
         if (icon != null) { Icon(icon, null, tint = fg, modifier = Modifier.size(15.dp)); Spacer(Modifier.width(5.dp)) }
-        Text(text, color = fg, style = MaterialTheme.typography.labelMedium)
+        Text(text, color = fg, style = MaterialTheme.typography.labelMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -125,21 +165,24 @@ fun BigButton(
     ) {
         Icon(icon, null, tint = fg, modifier = Modifier.size(22.dp))
         Spacer(Modifier.width(10.dp))
-        Text(text, color = fg, style = MaterialTheme.typography.labelLarge)
+        Text(text, color = fg, style = MaterialTheme.typography.labelLarge, textAlign = TextAlign.Center,
+            maxLines = 2, overflow = TextOverflow.Ellipsis, modifier = Modifier.weight(1f, fill = false))
     }
 }
 
+/** Quick-action tile; place inside `Row(Modifier.height(IntrinsicSize.Min))` so all tiles get the same height. */
 @Composable
 fun RowScope.ActionChip(text: String, icon: ImageVector, onClick: () -> Unit, active: Boolean = false) {
     Column(
-        Modifier.weight(1f).premiumCard(20.dp, if (active) Palette.Forest else Palette.Card)
-            .clickable(onClick = onClick).padding(vertical = 15.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
+        Modifier.weight(1f).fillMaxHeight().premiumCard(20.dp, if (active) Palette.Forest else Palette.Card)
+            .clickable(onClick = onClick).padding(horizontal = 6.dp, vertical = 14.dp),
+        horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
     ) {
         Icon(icon, null, tint = if (active) Palette.OnForest else Palette.Forest, modifier = Modifier.size(24.dp))
         Spacer(Modifier.height(6.dp))
-        Text(text, style = MaterialTheme.typography.labelMedium, color = if (active) Palette.OnForest else Palette.Ink,
-            maxLines = 1)
+        Text(text, style = MaterialTheme.typography.labelMedium.copy(letterSpacing = 0.sp),
+            color = if (active) Palette.OnForest else Palette.Ink, textAlign = TextAlign.Center,
+            maxLines = 2, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -157,9 +200,13 @@ fun ConfidenceRing(value: Float, color: Color, size: Dp = 92.dp, label: String) 
             drawArc(color, -90f, 360f * anim.value, false, Offset(inset, inset), arcSize,
                 style = Stroke(stroke, cap = StrokeCap.Round))
         }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text("${(anim.value * 100).toInt()}%", fontWeight = FontWeight.ExtraBold, fontSize = 22.sp, color = Palette.Ink)
-            Text(label, fontSize = 10.sp, color = Palette.InkSoft, maxLines = 1)
+        // text sized to the ring (not to the system font size) so it always stays inside the circle
+        val fs = LocalDensity.current.fontScale
+        Column(Modifier.width(size * 0.74f), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text("${(anim.value * 100).toInt()}%", fontWeight = FontWeight.ExtraBold, fontSize = (size.value * 0.24f / fs).sp,
+                lineHeight = 1.1.em, color = Palette.Ink, maxLines = 1)
+            AutoText(label, fontSize = (size.value * 0.11f / fs).sp, color = Palette.InkSoft,
+                textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
         }
     }
 }
@@ -185,10 +232,11 @@ fun SeverityGauge(pct: Float, labels: List<String>) {
             drawCircle(Color.White, 11.dp.toPx(), Offset(mx.coerceIn(11.dp.toPx(), size.width - 11.dp.toPx()), size.height / 2))
             drawCircle(Palette.Ink, 6.dp.toPx(), Offset(mx.coerceIn(11.dp.toPx(), size.width - 11.dp.toPx()), size.height / 2))
         }
-        Row(Modifier.fillMaxWidth().padding(top = 4.dp)) {
-            Text(labels[0], Modifier.weight(0.25f), fontSize = 11.sp, color = Palette.InkSoft)
-            Text(labels[1], Modifier.weight(0.375f), fontSize = 11.sp, color = Palette.InkSoft)
-            Text(labels[2], Modifier.weight(0.375f), fontSize = 11.sp, color = Palette.InkSoft)
+        // under-labels: left / centre / right of their segment, shrunk to fit instead of breaking a word
+        Row(Modifier.fillMaxWidth().padding(top = 4.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            AutoText(labels[0], Modifier.weight(0.25f), fontSize = 11.sp, color = Palette.InkSoft, textAlign = TextAlign.Start)
+            AutoText(labels[1], Modifier.weight(0.375f), fontSize = 11.sp, color = Palette.InkSoft, textAlign = TextAlign.Center)
+            AutoText(labels[2], Modifier.weight(0.375f), fontSize = 11.sp, color = Palette.InkSoft, textAlign = TextAlign.End)
         }
     }
 }
@@ -202,11 +250,12 @@ fun BitmapImage(bmp: Bitmap?, modifier: Modifier, contentScale: ContentScale = C
 @Composable
 fun NumberedStep(n: Int, text: String, color: Color = Palette.Forest) {
     Row(Modifier.fillMaxWidth().padding(vertical = 6.dp), verticalAlignment = Alignment.Top) {
-        Box(Modifier.size(28.dp).clip(CircleShape).background(color), contentAlignment = Alignment.Center) {
-            Text("$n", color = Palette.OnForest, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+        Box(Modifier.size(26.dp).clip(CircleShape).background(color), contentAlignment = Alignment.Center) {
+            Text("$n", color = Palette.OnForest, fontWeight = FontWeight.Bold, fontSize = (13f / LocalDensity.current.fontScale).sp,
+                lineHeight = 1.em)
         }
         Spacer(Modifier.width(12.dp))
-        Text(text, style = MaterialTheme.typography.bodyLarge, color = Palette.Ink, modifier = Modifier.padding(top = 2.dp))
+        Text(text, style = MaterialTheme.typography.bodyLarge, color = Palette.Ink, modifier = Modifier.weight(1f))
     }
 }
 

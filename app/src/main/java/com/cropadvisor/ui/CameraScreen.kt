@@ -163,7 +163,7 @@ fun CameraScreen(state: AppState, onBack: () -> Unit, onCaptured: (Bitmap) -> Un
         }
 
         // hint + controls
-        Column(Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(bottom = 28.dp),
+        Column(Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(start = 24.dp, end = 24.dp, bottom = 28.dp),
             horizontalAlignment = Alignment.CenterHorizontally) {
             Text(state.t("frame_hint"), color = Color.White, fontSize = 14.sp, textAlign = TextAlign.Center,
                 modifier = Modifier.clip(RoundedCornerShape(50)).background(Color.Black.copy(alpha = 0.5f))

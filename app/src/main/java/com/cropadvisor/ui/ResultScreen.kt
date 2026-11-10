@@ -31,6 +31,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -77,6 +82,7 @@ import com.cropadvisor.Strings
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun ResultScreen(state: AppState, onBack: () -> Unit, onRetake: () -> Unit) {
     val scan = state.current ?: return
@@ -96,12 +102,14 @@ fun ResultScreen(state: AppState, onBack: () -> Unit, onRetake: () -> Unit) {
 
     Column(Modifier.fillMaxSize().background(Palette.Cream).verticalScroll(rememberScrollState())) {
         // ---------------- photo header ----------------
-        Box(Modifier.fillMaxWidth().height(340.dp)) {
-            BitmapImage(photo, Modifier.fillMaxSize())
-            Box(Modifier.fillMaxSize().background(Palette.scrim))
+        // header grows with long names / large fonts instead of pushing the title under the back button
+        Box(Modifier.fillMaxWidth().heightIn(min = 340.dp)) {
+            BitmapImage(photo, Modifier.matchParentSize())
+            Box(Modifier.matchParentSize().background(Palette.scrim))
             Row(Modifier.statusBarsPadding().padding(16.dp)) { RoundIcon(Icons.Rounded.ArrowBack, onBack) }
-            Column(Modifier.align(Alignment.BottomStart).padding(22.dp)) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(Modifier.align(Alignment.BottomStart).fillMaxWidth().statusBarsPadding()
+                .padding(start = 22.dp, end = 22.dp, top = 84.dp, bottom = 22.dp)) {
+                FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                     val (typeText, typeIcon) = when {
                         scan.uncertain -> state.t("unsure_pill") to Icons.Rounded.HelpOutline
                         healthy -> state.t("healthy") to Icons.Rounded.CheckCircle
@@ -114,9 +122,10 @@ fun ResultScreen(state: AppState, onBack: () -> Unit, onRetake: () -> Unit) {
                             Color.White.copy(alpha = 0.2f), Color.White)
                 }
                 Spacer(Modifier.height(10.dp))
-                Text(when { scan.noLeaf -> state.t("noleaf_title"); scan.otherCrop -> state.t("other_title"); scan.uncertain -> state.t("unsure_title")
-                            else -> state.conditionName(scan.label) },
-                    color = Color.White, style = MaterialTheme.typography.displaySmall)
+                val title = when { scan.noLeaf -> state.t("noleaf_title"); scan.otherCrop -> state.t("other_title")
+                    scan.uncertain -> state.t("unsure_title"); else -> state.conditionName(scan.label) }
+                Text(title, color = Color.White,
+                    style = if (title.length > 24) MaterialTheme.typography.headlineMedium else MaterialTheme.typography.displaySmall)
             }
         }
 
@@ -142,7 +151,7 @@ fun ResultScreen(state: AppState, onBack: () -> Unit, onRetake: () -> Unit) {
                                 Text(state.t(sevKey), style = MaterialTheme.typography.headlineSmall,
                                     color = severityColor(sevKey).let { if (sevKey == "mild") Palette.Leaf else it })
                                 Text("${scan.severityPct.toInt()}% ${state.t("affected")}", fontSize = 13.sp,
-                                    color = Palette.InkSoft)
+                                    color = Palette.InkSoft, maxLines = 2)
                                 Spacer(Modifier.height(8.dp))
                                 SeverityGauge(scan.severityPct,
                                     listOf(state.t("mild"), state.t("moderate"), state.t("severe")))
@@ -177,7 +186,7 @@ fun ResultScreen(state: AppState, onBack: () -> Unit, onRetake: () -> Unit) {
                 androidx.compose.runtime.LaunchedEffect(scan.id, state.lang) {
                     if (state.autoRead) state.speak(spoken, toggle = false)
                 }
-                Row(Modifier.enterUp(0), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(Modifier.enterUp(0).height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     ActionChip(if (state.speaking) state.t("stop") else state.t("listen"), Icons.Rounded.VolumeUp,
                         { state.speak(spoken) }, active = state.speaking)
                     ActionChip(state.t("share"), Icons.Rounded.Share, {
@@ -229,7 +238,7 @@ fun ResultScreen(state: AppState, onBack: () -> Unit, onRetake: () -> Unit) {
             BigButton(state.t("scan_again"), Icons.Rounded.CameraAlt, onRetake, Modifier.fillMaxWidth())
             Spacer(Modifier.height(10.dp))
             Text("Vision ${scan.inferenceMs} ms · on-device · ExecuTorch + XNNPACK (Arm CPU)",
-                fontSize = 11.sp, color = Palette.InkSoft, modifier = Modifier.align(Alignment.CenterHorizontally))
+                fontSize = 11.sp, color = Palette.InkSoft, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             Spacer(Modifier.height(24.dp))
         }
     }
@@ -237,13 +246,14 @@ fun ResultScreen(state: AppState, onBack: () -> Unit, onRetake: () -> Unit) {
 
 @Composable
 private fun LanguageChips(state: AppState) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         Strings.LANGS.forEach { (code, name) ->
             val on = state.lang == code
-            Text(name, color = if (on) Palette.OnForest else Palette.Forest, fontWeight = FontWeight.SemiBold,
-                modifier = Modifier.clip(RoundedCornerShape(50)).background(if (on) Palette.Forest else Palette.CardAlt)
+            AutoText(name, color = if (on) Palette.OnForest else Palette.Forest, fontWeight = FontWeight.SemiBold,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.weight(1f).clip(RoundedCornerShape(50)).background(if (on) Palette.Forest else Palette.CardAlt)
                     .clickable { if (!on) { state.setLanguage(code); state.requestAdvice() } }
-                    .padding(horizontal = 16.dp, vertical = 9.dp))
+                    .padding(horizontal = 10.dp, vertical = 9.dp))
         }
     }
 }
@@ -275,7 +285,7 @@ private fun AiCard(state: AppState) {
             state.advice.isBlank() && state.adviceRunning -> Row(verticalAlignment = Alignment.CenterVertically) {
                 CircularProgressIndicator(Modifier.size(18.dp), color = Palette.Leaf, strokeWidth = 2.dp)
                 Spacer(Modifier.width(10.dp))
-                Text(state.t("ai_thinking"), color = Palette.InkSoft)
+                Text(state.t("ai_thinking"), color = Palette.InkSoft, modifier = Modifier.weight(1f))
             }
             else -> {
                 val blink by rememberInfiniteTransition(label = "c").animateFloat(
@@ -351,7 +361,7 @@ private fun VoiceCard(state: AppState) {
             if (state.voiceAnswer.isBlank()) Row(verticalAlignment = Alignment.CenterVertically) {
                 CircularProgressIndicator(Modifier.size(18.dp), color = Palette.Leaf, strokeWidth = 2.dp)
                 Spacer(Modifier.width(10.dp))
-                Text(state.t("ai_thinking"), color = Palette.InkSoft)
+                Text(state.t("ai_thinking"), color = Palette.InkSoft, modifier = Modifier.weight(1f))
             } else Column(Modifier.fillMaxWidth().clip(RoundedCornerShape(16.dp)).background(Palette.MintSoft).padding(12.dp)) {
                 Text(state.voiceAnswer, style = MaterialTheme.typography.bodyLarge, color = Palette.Ink)
                 Spacer(Modifier.height(8.dp))
@@ -376,12 +386,13 @@ private fun AltRow(state: AppState, label: String, p: Float) {
         CropBadge(label.substringBefore("___"), 20.dp)
         Spacer(Modifier.width(10.dp))
         Text(state.conditionName(label),
-            modifier = Modifier.weight(1f), style = MaterialTheme.typography.bodyLarge, color = Palette.Ink)
+            modifier = Modifier.weight(1f).padding(end = 8.dp), style = MaterialTheme.typography.bodyLarge, color = Palette.Ink)
         Box(Modifier.width(70.dp).height(6.dp).clip(RoundedCornerShape(3.dp)).background(Palette.Line)) {
             Box(Modifier.fillMaxWidth(p.coerceIn(0.02f, 1f)).height(6.dp).background(Palette.Sky))
         }
         Spacer(Modifier.width(8.dp))
-        Text("${(p * 100).toInt()}%", fontSize = 13.sp, color = Palette.InkSoft, modifier = Modifier.width(38.dp))
+        Text("${(p * 100).toInt()}%", fontSize = 13.sp, color = Palette.InkSoft, textAlign = TextAlign.End, maxLines = 1,
+            modifier = Modifier.width(44.dp))
     }
 }
 

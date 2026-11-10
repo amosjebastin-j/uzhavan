@@ -18,6 +18,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
@@ -154,7 +157,8 @@ fun MainShell(
                 tabs.forEach { (key, icon, i) ->
                     NavigationBarItem(
                         selected = tab == i, onClick = { onTab(i) },
-                        icon = { Icon(icon, null) }, label = { Text(state.t(key), maxLines = 1) },
+                        icon = { Icon(icon, null) },
+                        label = { AutoText(state.t(key), fontSize = 12.sp, fontWeight = FontWeight.SemiBold) },
                         colors = NavigationBarItemDefaults.colors(
                             selectedIconColor = Palette.Forest, selectedTextColor = Palette.Forest,
                             indicatorColor = Palette.GoldSoft, unselectedIconColor = Palette.InkSoft,
@@ -207,7 +211,8 @@ fun HomeScreen(state: AppState, onScan: () -> Unit, onPicked: (Bitmap) -> Unit,
                     Text("${state.t("greet")}, ${user?.firstName ?: ""}", color = Color.White,
                         fontWeight = FontWeight.Bold, fontSize = 18.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(SimpleDateFormat("EEEE, d MMMM", localeFor(state.lang)).format(Date()),
-                        color = Palette.MintSoftFixed.copy(alpha = 0.85f), fontSize = 13.sp)
+                        color = Palette.MintSoftFixed.copy(alpha = 0.85f), fontSize = 13.sp, maxLines = 1,
+                        overflow = TextOverflow.Ellipsis)
                 }
                 Row(
                     Modifier.clip(RoundedCornerShape(50)).background(Color.White.copy(alpha = 0.14f))
@@ -275,7 +280,7 @@ fun HomeScreen(state: AppState, onScan: () -> Unit, onPicked: (Bitmap) -> Unit,
                 Box(Modifier.size(44.dp).clip(RoundedCornerShape(14.dp)).background(Palette.goldBrush),
                     contentAlignment = Alignment.Center) { Icon(Icons.Rounded.Lightbulb, null, tint = Palette.OnGold) }
                 Spacer(Modifier.width(14.dp))
-                Column {
+                Column(Modifier.weight(1f)) {
                     Eyebrow(state.t("tip_day"))
                     Spacer(Modifier.height(2.dp))
                     Text(state.t(tipKey), style = MaterialTheme.typography.bodyLarge, color = Palette.Ink)
@@ -283,11 +288,11 @@ fun HomeScreen(state: AppState, onScan: () -> Unit, onPicked: (Bitmap) -> Unit,
             }
 
             // ---------- recent ----------
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(Modifier.weight(1f)) { SectionHeader(state.t("recent"), Icons.Rounded.History) }
+            SectionHeader(state.t("recent"), Icons.Rounded.History) {
                 if (state.history.isNotEmpty())
-                    Text(state.t("see_all"), color = Palette.Leaf, fontWeight = FontWeight.SemiBold,
-                        modifier = Modifier.padding(top = 16.dp).clickable(onClick = onSeeAll))
+                    Text(state.t("see_all"), color = Palette.Leaf, fontWeight = FontWeight.SemiBold, maxLines = 1,
+                        modifier = Modifier.clip(RoundedCornerShape(8.dp)).clickable(onClick = onSeeAll)
+                            .padding(horizontal = 8.dp, vertical = 4.dp))
             }
             if (state.history.isEmpty()) EmptyNote(state.t("no_history"))
             state.history.take(3).forEachIndexed { i, s -> Box(Modifier.enterUp(7 + i)) { ScanRow(state, s, onOpenScan) } }
@@ -324,9 +329,9 @@ private fun FieldHealthCard(state: AppState) {
 
 @Composable
 private fun Stat(value: String, label: String, color: Color, modifier: Modifier) {
-    Column(modifier) {
-        Text(value, style = MaterialTheme.typography.headlineMedium, color = color)
-        Text(label, fontSize = 13.sp, color = Palette.InkSoft)
+    Column(modifier.padding(end = 6.dp)) {
+        AutoText(value, style = MaterialTheme.typography.headlineMedium, color = color)
+        Text(label, fontSize = 13.sp, color = Palette.InkSoft, maxLines = 2, overflow = TextOverflow.Ellipsis)
     }
 }
 
@@ -346,11 +351,12 @@ fun Avatar(initials: String, size: androidx.compose.ui.unit.Dp, modifier: Modifi
 fun localeFor(lang: String): Locale = when (lang) { "ta" -> Locale("ta", "IN"); "hi" -> Locale("hi", "IN"); else -> Locale("en", "IN") }
 
 @Composable
-fun SectionHeader(text: String, icon: ImageVector) {
-    Row(Modifier.padding(top = 24.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
+fun SectionHeader(text: String, icon: ImageVector, trailing: (@Composable () -> Unit)? = null) {
+    Row(Modifier.fillMaxWidth().padding(top = 24.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically) {
         Icon(icon, null, tint = Palette.GoldText, modifier = Modifier.size(20.dp))
         Spacer(Modifier.width(10.dp))
-        Text(text, style = MaterialTheme.typography.titleLarge, color = Palette.Ink)
+        Text(text, style = MaterialTheme.typography.titleLarge, color = Palette.Ink, modifier = Modifier.weight(1f))
+        trailing?.invoke()
     }
 }
 
@@ -380,7 +386,7 @@ fun ScanRow(state: AppState, scan: Scan, onOpen: (Scan) -> Unit, onDelete: ((Sca
                 Spacer(Modifier.width(6.dp))
                 Text("${state.cropName(scan.label)} · " +
                     SimpleDateFormat("d MMM, h:mm a", localeFor(state.lang)).format(Date(scan.time)),
-                    fontSize = 12.sp, color = Palette.InkSoft)
+                    fontSize = 12.sp, color = Palette.InkSoft, maxLines = 1, overflow = TextOverflow.Ellipsis)
             }
             Spacer(Modifier.height(5.dp))
             Pill(when {
@@ -436,23 +442,23 @@ fun DeviceScreen(state: AppState) {
         Text(state.t("perf_title"), style = MaterialTheme.typography.headlineMedium, color = Palette.Ink)
         Text(state.t("perf_sub"), style = MaterialTheme.typography.bodyMedium, color = Palette.InkSoft)
         Spacer(Modifier.height(16.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             MetricTile("Vision load", "${state.visionLoadMs} ms", Modifier.weight(1f))
             MetricTile("Llama load", if (state.llmReady) "${state.llmLoadMs} ms" else "—", Modifier.weight(1f))
         }
         Spacer(Modifier.height(10.dp))
-        Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
             MetricTile("Last vision", last?.let { "${it.inferenceMs} ms" } ?: "—", Modifier.weight(1f))
             MetricTile("Preprocess", last?.let { "${it.preprocessMs} ms" } ?: "—", Modifier.weight(1f))
         }
         state.llmStats?.let { s ->
             Spacer(Modifier.height(10.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 MetricTile("Llama decode", "%.1f tok/s".format(s.decodeTps), Modifier.weight(1f))
                 MetricTile("First token", "${s.ttftMs} ms", Modifier.weight(1f))
             }
             Spacer(Modifier.height(10.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 MetricTile("Prefill", "%.0f tok/s".format(s.prefillTps), Modifier.weight(1f))
                 MetricTile("Tokens in / out", "${s.promptTokens} / ${s.genTokens}", Modifier.weight(1f))
             }
@@ -480,12 +486,12 @@ fun DeviceScreen(state: AppState) {
             val es = state.evalStats
             if (es != null) {
                 val p = { a: Int, b: Int -> "%.1f%%".format(100.0 * a / maxOf(1, b)) }
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     MetricTile("5 crops", p(es.supOk, es.supN), Modifier.weight(1f))
                     MetricTile("Crop correct", p(es.cropOk, es.n), Modifier.weight(1f))
                 }
                 Spacer(Modifier.height(10.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Row(Modifier.height(IntrinsicSize.Min), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     MetricTile("When sure (≥60%)", p(es.confOk, es.conf), Modifier.weight(1f))
                     MetricTile("Per photo", "${es.avgInfMs + es.avgPreMs} ms", Modifier.weight(1f))
                 }
@@ -535,10 +541,11 @@ fun DeviceScreen(state: AppState) {
 
 @Composable
 private fun MetricTile(label: String, value: String, modifier: Modifier) {
-    Column(modifier.premiumCard(20.dp).padding(16.dp)) {
+    Column(modifier.fillMaxHeight().premiumCard(20.dp).padding(16.dp)) {
         Eyebrow(label)
+        Spacer(Modifier.weight(1f))
         Spacer(Modifier.height(6.dp))
-        Text(value, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Palette.Forest)
+        AutoText(value, fontSize = 20.sp, fontWeight = FontWeight.Bold, color = Palette.Forest)
     }
 }
 
@@ -564,7 +571,7 @@ fun ProfileScreen(state: AppState, onAbout: () -> Unit) {
                     Text(state.t("delete"), color = Palette.Terracotta, fontWeight = FontWeight.Bold)
                 }
             },
-            dismissButton = { TextButton({ confirm = null }) { Text("✕") } },
+            dismissButton = { TextButton({ confirm = null }) { Text(state.t("cancel"), color = Palette.Ink) } },
             containerColor = Palette.Card,
         )
     }
@@ -579,7 +586,7 @@ fun ProfileScreen(state: AppState, onAbout: () -> Unit) {
             Spacer(Modifier.height(8.dp))
             Avatar(user.initials, 88.dp)
             Spacer(Modifier.height(12.dp))
-            Text(user.name, color = Color.White, style = MaterialTheme.typography.headlineSmall)
+            Text(user.name, color = Color.White, style = MaterialTheme.typography.headlineSmall, textAlign = TextAlign.Center)
             Text("+91 ${user.phone.take(2)}••••••${user.phone.takeLast(2)}", color = Palette.MintSoftFixed, fontSize = 14.sp)
             if (user.village.isNotBlank()) {
                 Spacer(Modifier.height(8.dp))
@@ -587,7 +594,8 @@ fun ProfileScreen(state: AppState, onAbout: () -> Unit) {
             }
             Spacer(Modifier.height(8.dp))
             Text("${state.t("member_since")} ${SimpleDateFormat("MMM yyyy", localeFor(state.lang)).format(Date(user.created))} · " +
-                "${state.history.size} ${state.t("scans")}", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp)
+                "${state.history.size} ${state.t("scans")}", color = Color.White.copy(alpha = 0.7f), fontSize = 13.sp,
+                textAlign = TextAlign.Center)
             Spacer(Modifier.height(8.dp))
         }
 
@@ -600,11 +608,11 @@ fun ProfileScreen(state: AppState, onAbout: () -> Unit) {
                 Row(Modifier.fillMaxWidth().padding(14.dp).clip(RoundedCornerShape(16.dp)).background(Palette.CardAlt).padding(4.dp)) {
                     listOf("system" to "theme_system", "light" to "theme_light", "dark" to "theme_dark").forEach { (mode, key) ->
                         val on = state.theme == mode
-                        Text(state.t(key), Modifier.weight(1f).clip(RoundedCornerShape(12.dp))
+                        AutoText(state.t(key), Modifier.weight(1f).clip(RoundedCornerShape(12.dp))
                             .background(if (on) Palette.Forest else Color.Transparent)
-                            .clickable { state.setThemeMode(mode) }.padding(vertical = 11.dp),
+                            .clickable { state.setThemeMode(mode) }.padding(horizontal = 4.dp, vertical = 11.dp),
                             color = if (on) Palette.OnForest else Palette.Ink, fontWeight = FontWeight.SemiBold,
-                            textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+                            textAlign = TextAlign.Center)
                     }
                 }
                 SettingRow(Icons.Rounded.Translate, state.t("language"),
@@ -616,7 +624,8 @@ fun ProfileScreen(state: AppState, onAbout: () -> Unit) {
                 ToggleRow(Icons.Rounded.RecordVoiceOver, state.t("auto_read"), null, state.autoRead) { state.setAutoReadOn(it) }
                 Column(Modifier.padding(horizontal = 16.dp, vertical = 8.dp)) {
                     Row {
-                        Text(state.t("speech_rate"), color = Palette.Ink, modifier = Modifier.weight(1f))
+                        Text(state.t("speech_rate"), color = Palette.Ink, style = MaterialTheme.typography.titleMedium,
+                            modifier = Modifier.weight(1f))
                         Text("%.1f×".format(state.speechRate), color = Palette.Leaf, fontWeight = FontWeight.Bold)
                     }
                     Slider(state.speechRate, { state.setRate(it) }, valueRange = 0.6f..1.4f, steps = 7,
@@ -642,8 +651,8 @@ fun ProfileScreen(state: AppState, onAbout: () -> Unit) {
                 SettingRow(Icons.Rounded.DeleteForever, state.t("delete_profile"), null, danger = true) { confirm = "delete" }
             }
             Spacer(Modifier.height(8.dp))
-            Text("${state.t("app")} · v3.0 · Bharat AI-SoC Challenge 2026–27", fontSize = 12.sp, color = Palette.InkSoft,
-                modifier = Modifier.align(Alignment.CenterHorizontally))
+            Text("${state.t("app")} · v3.1 · Bharat AI-SoC Challenge 2026–27", fontSize = 12.sp, color = Palette.InkSoft,
+                textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
             Spacer(Modifier.height(24.dp))
         }
     }
@@ -702,7 +711,7 @@ fun AboutScreen(state: AppState, onBack: () -> Unit) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 UzhavanLogo(60.dp, animated = true)
                 Spacer(Modifier.width(14.dp))
-                Column {
+                Column(Modifier.weight(1f)) {
                     Text(state.t("app"), color = Color.White, style = MaterialTheme.typography.headlineMedium)
                     Text(state.t("tagline"), color = Palette.MintSoftFixed, fontSize = 14.sp)
                 }
@@ -740,7 +749,8 @@ fun AboutScreen(state: AppState, onBack: () -> Unit) {
                 listOf("tip1", "tip2", "tip3", "tip4").forEach { k ->
                     Row(Modifier.padding(vertical = 4.dp)) {
                         Text("•  ", color = Palette.Leaf, fontWeight = FontWeight.Bold)
-                        Text(state.t(k), style = MaterialTheme.typography.bodyLarge, color = Palette.Ink)
+                        Text(state.t(k), style = MaterialTheme.typography.bodyLarge, color = Palette.Ink,
+                            modifier = Modifier.weight(1f))
                     }
                 }
             }
@@ -751,6 +761,7 @@ fun AboutScreen(state: AppState, onBack: () -> Unit) {
             Text("Vision: MobileNetV3 · Advice: Llama 3.2 1B · Runtime: ExecuTorch on Arm CPU\nBharat AI-SoC Challenge 2026–27 · PS1",
                 fontSize = 12.sp, color = Palette.InkSoft)
             Spacer(Modifier.height(24.dp))
+            Spacer(Modifier.navigationBarsPadding())
         }
     }
 }

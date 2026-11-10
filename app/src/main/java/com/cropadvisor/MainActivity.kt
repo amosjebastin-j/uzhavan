@@ -45,7 +45,7 @@ class MainActivity : ComponentActivity() {
 
         setContent {
             val dark = when (state.theme) { "dark" -> true; "light" -> false; else -> androidx.compose.foundation.isSystemInDarkTheme() }
-            AppTheme(dark) {
+            AppTheme(dark, state.lang) {
                 var route by remember { mutableStateOf(Route.MAIN) }
                 var tab by remember { mutableStateOf(0) }
                 val ready = state.visionReady && state.llmDone

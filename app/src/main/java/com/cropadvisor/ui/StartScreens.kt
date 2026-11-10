@@ -77,6 +77,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.cropadvisor.AppState
 import com.cropadvisor.Strings
@@ -100,9 +101,9 @@ fun SplashScreen(state: AppState) {
             UzhavanLogo(132.dp, animated = true)
             Spacer(Modifier.height(28.dp))
             Text(state.t("app"), color = Color.White, style = MaterialTheme.typography.displaySmall,
-                modifier = Modifier.enterUp(2))
+                textAlign = TextAlign.Center, modifier = Modifier.enterUp(2))
             Text(state.t("tagline"), color = Palette.GoldLight, style = MaterialTheme.typography.bodyLarge,
-                modifier = Modifier.enterUp(3))
+                textAlign = TextAlign.Center, modifier = Modifier.enterUp(3))
             Spacer(Modifier.height(44.dp))
             Column(Modifier.enterUp(5)) {
                 LoadRow(state.t("vision_model"), state.visionReady, state.visionLoadMs)
@@ -112,7 +113,7 @@ fun SplashScreen(state: AppState) {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.enterUp(7)) {
                 Icon(Icons.Rounded.WifiOff, null, tint = Palette.MintSoftFixed, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(6.dp))
-                Text(state.t("offline"), color = Palette.MintSoftFixed, fontSize = 13.sp)
+                Text(state.t("offline"), color = Palette.MintSoftFixed, fontSize = 13.sp, textAlign = TextAlign.Center)
             }
         }
     }
@@ -140,10 +141,9 @@ private fun LoadRow(name: String, done: Boolean, ms: Long) {
 @Composable
 fun LanguageScreen(state: AppState, first: Boolean, onDone: () -> Unit) {
     var sel by remember { mutableStateOf(state.lang.ifEmpty { "en" }) }
-    Column(
-        Modifier.fillMaxSize().background(Palette.Cream).statusBarsPadding().navigationBarsPadding().padding(24.dp),
-    ) {
-        Spacer(Modifier.height(32.dp))
+    Column(Modifier.fillMaxSize().background(Palette.Cream).statusBarsPadding().navigationBarsPadding()) {
+      Column(Modifier.weight(1f).verticalScroll(rememberScrollState()).padding(horizontal = 24.dp)) {
+        Spacer(Modifier.height(40.dp))
         UzhavanLogo(60.dp, Modifier.enterUp(0))
         Spacer(Modifier.height(20.dp))
         Text(Strings.t("choose_lang", sel), style = MaterialTheme.typography.headlineMedium, color = Palette.Ink,
@@ -164,7 +164,7 @@ fun LanguageScreen(state: AppState, first: Boolean, onDone: () -> Unit) {
                 Box(Modifier.size(48.dp).clip(RoundedCornerShape(14.dp))
                     .background(if (on) Palette.OnForest.copy(alpha = 0.15f) else Palette.MintSoft),
                     contentAlignment = Alignment.Center) {
-                    Text(samples[code]!!, fontSize = 22.sp, fontWeight = FontWeight.Bold,
+                    Text(samples[code]!!, fontSize = 22.sp, fontWeight = FontWeight.Bold, lineHeight = 1.2.em,
                         color = if (on) Palette.OnForest else Palette.Forest)
                 }
                 Spacer(Modifier.width(16.dp))
@@ -173,9 +173,10 @@ fun LanguageScreen(state: AppState, first: Boolean, onDone: () -> Unit) {
                 if (on) Icon(Icons.Rounded.Check, null, tint = Palette.OnForest)
             }
         }
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(16.dp))
+      }
         BigButton(Strings.t("continue", sel), Icons.Rounded.Translate,
-            onClick = { state.setLanguage(sel); onDone() }, modifier = Modifier.fillMaxWidth(),
+            onClick = { state.setLanguage(sel); onDone() }, modifier = Modifier.padding(24.dp).fillMaxWidth(),
             fg = Palette.OnGold, brush = Palette.goldBrush)
     }
 }
@@ -192,7 +193,7 @@ fun AnalysingScreen(state: AppState) {
         Modifier.fillMaxSize().background(Palette.ForestDeep).statusBarsPadding().navigationBarsPadding().padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center,
     ) {
-        Box(Modifier.enterUp(0).fillMaxWidth().aspectRatio(1f).clip(RoundedCornerShape(32.dp))
+        Box(Modifier.enterUp(0).weight(1f, fill = false).aspectRatio(1f).clip(RoundedCornerShape(32.dp))
             .border(1.5.dp, Palette.Gold.copy(alpha = 0.5f), RoundedCornerShape(32.dp))) {
             val photo = state.scanningPhoto
             if (photo != null) BitmapImage(photo, Modifier.fillMaxSize())
@@ -222,7 +223,7 @@ fun AnalysingScreen(state: AppState) {
                 CircularProgressIndicator(Modifier.size(20.dp), color = Palette.Gold, strokeWidth = 2.5.dp,
                     trackColor = Palette.Gold.copy(alpha = 0.18f))
                 Spacer(Modifier.width(10.dp))
-                Text(state.t(k), color = Palette.MintSoftFixed, style = MaterialTheme.typography.bodyLarge)
+                Text(state.t(k), color = Palette.MintSoftFixed, style = MaterialTheme.typography.bodyLarge, maxLines = 2)
             }
         }
     }
@@ -273,7 +274,7 @@ fun LoginScreen(state: AppState) {
         containerColor = Palette.Card, titleContentColor = Palette.Ink, textContentColor = Palette.InkSoft,
     )
 
-    Column(Modifier.fillMaxSize().background(Palette.Cream).verticalScroll(rememberScrollState()).imePadding()) {
+    Column(Modifier.fillMaxSize().background(Palette.Cream).imePadding().verticalScroll(rememberScrollState())) {
         // ---------- hero ----------
         Box(Modifier.fillMaxWidth().clip(RoundedCornerShape(bottomStart = 36.dp, bottomEnd = 36.dp)).background(Palette.hero)) {
             UzhavanLogo(240.dp, Modifier.align(Alignment.TopEnd).offset(x = 70.dp, y = (-20).dp).alpha(0.07f), badge = false)
@@ -411,7 +412,8 @@ fun LoginScreen(state: AppState) {
                 Icon(Icons.Rounded.Lock, null, tint = Palette.Leaf, modifier = Modifier.size(16.dp))
             }
             Spacer(Modifier.width(10.dp))
-            Text(state.t("db_note"), color = Palette.InkSoft, style = MaterialTheme.typography.bodySmall)
+            Text(state.t("db_note"), color = Palette.InkSoft, style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier.weight(1f))
         }
     }
 }
