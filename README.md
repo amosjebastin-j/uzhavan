@@ -300,4 +300,4 @@ Poppins & DM Serif Display fonts (SIL OFL) · Kisan Call Centre 1800-180-1551
 
 ## License
 
-Code: [MIT](LICENSE). Llama 3.2 is used under the Llama 3.2 Community License; datasets under their own licenses.
+Code: [MIT](LICENSE). **Built with Llama** — Llama 3.2 is used under the Llama 3.2 Community License. Third-party components and datasets keep their own licenses: see [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md).
